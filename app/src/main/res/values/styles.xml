@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="LoginBtn" parent="">
+        <item name="android:backgroundTint">#BAC819</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="loginInputStyle" parent="@android:style/Widget.EditText">
+        <item name="fontFamily">@font/itim</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center|bottom</item>
+    </style>
+
+    <style name="divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="height">2dp</item>
+        <item name="android:background">@color/white</item>
+
+    </style>
+
+
+</resources>
