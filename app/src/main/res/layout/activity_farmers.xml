@@ -48,13 +48,6 @@
         android:fontFamily="@font/itim"
         android:textSize="20sp"/>
 
-        <com.example.agronet.FarmInfoView
-            android:id="@+id/farmInfoView1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/search_bar"
-            android:layout_marginTop="20dp" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
