@@ -6,4 +6,6 @@
     <string name="login">Login</string>
     <string name="register">Register</string>
     <string name="dont">Don\'t have an account?</string>
+    <string name="enter_your_password_here">Enter your password here...</string>
+    <string name="choose_a_profile">Choose a profile...</string>
 </resources>
