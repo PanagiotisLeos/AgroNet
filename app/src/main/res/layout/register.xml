@@ -117,34 +117,29 @@
         android:layout_height="80dp"
         android:scaleType="fitXY"
         android:src="@drawable/grass"
-
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="808dp"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/facebookButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="696dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="135dp"
         android:background="@drawable/fb"
         android:onClick="onFacebookButtonClick"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintBottom_toTopOf="@+id/bottomGuideline"
+        app:layout_constraintEnd_toStartOf="@+id/gmailButton"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/gmailButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:background="@drawable/gmail"
         android:onClick="onGmailButtonClick"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="236dp"
-        tools:layout_editor_absoluteY="696dp" />
+        app:layout_constraintBottom_toTopOf="@+id/bottomGuideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="50dp" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -152,7 +147,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.93" />
+        app:layout_constraintGuide_percent="0.91" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
