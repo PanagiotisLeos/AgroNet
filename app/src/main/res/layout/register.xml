@@ -66,18 +66,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
 
-    <EditText
-        style="@style/loginInputStyle"
-        android:id="@+id/profileEditText"
+
+    <TextView
+        android:id="@android:id/text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:gravity="center" />
+
+    <Spinner
+        android:id="@+id/profileSpinner"
         android:layout_width="292dp"
         android:layout_height="41dp"
         android:layout_marginTop="40dp"
         android:background="@drawable/edit_text_background_rounded"
-        android:hint="@string/choose_a_profile"
         android:padding="8dp"
+        android:spinnerMode="dropdown"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/signUpButton"
@@ -92,7 +101,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/profileSpinner" />
 
     <TextView
         style="@style/loginInputStyle"
@@ -143,6 +152,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.91" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
