@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">AgroNet</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
+    <string name="email_string">Email</string>
+    <string name="password_string">Password</string>
     <string name="moto_string">CONNECT-SHARE-GROW!</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
