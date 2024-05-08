@@ -195,8 +195,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="438dp"
+        android:layout_height="275dp"
         android:layout_above="@+id/footer"
         android:layout_below="@+id/statistics"
         android:layout_marginTop="8dp"
@@ -207,49 +207,7 @@
         tools:layout_editor_absoluteX="0dp"
         tools:listitem="@layout/item_product" />
 
-    <LinearLayout
-        android:id="@+id/footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="#FFA726"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="908dp"
-        tools:ignore="MissingConstraints">
 
-        <TextView
-            android:id="@+id/navigationProducts"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Products"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/navigationMyOrders"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="My orders"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/navigationFarmers"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Farmers"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
