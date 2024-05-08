@@ -43,14 +43,14 @@
         android:orientation="vertical"
         android:padding="16dp"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="103dp">
+        tools:layout_editor_absoluteY="103dp"
+        tools:ignore="MissingConstraints">
 
         <ImageView
             android:id="@+id/farmerImage"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginBottom="8dp"
-            android:contentDescription="@string/farmer_photo"
             android:src="@drawable/farmer_photo" />
 
         <TextView
@@ -79,7 +79,6 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginBottom="8dp"
-            android:contentDescription="@string/bio_certification"
             android:src="@drawable/bio_badge" />
 
         <TextView
@@ -111,7 +110,8 @@
         android:padding="8dp"
         android:weightSum="3"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="516dp">
+        tools:layout_editor_absoluteY="516dp"
+        tools:ignore="MissingConstraints">
 
         <androidx.appcompat.widget.AppCompatButton
 
@@ -203,7 +203,8 @@
         android:paddingEnd="8dp"
         android:scrollbars="horizontal"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="708dp" />
+        tools:layout_editor_absoluteY="708dp"
+        tools:ignore="MissingConstraints" />
 
     <LinearLayout
         android:id="@+id/footer"
@@ -215,7 +216,8 @@
         android:orientation="horizontal"
         android:padding="16dp"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="908dp">
+        tools:layout_editor_absoluteY="908dp"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/navigationProducts"
@@ -255,7 +257,8 @@
         android:orientation="horizontal"
         android:paddingTop="8dp"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="455dp">
+        tools:layout_editor_absoluteY="455dp"
+        tools:ignore="MissingConstraints">
 
 
         <androidx.appcompat.widget.AppCompatButton
@@ -279,4 +282,4 @@
 
 
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
