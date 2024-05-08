@@ -1,11 +1,10 @@
 package com.example.agronet
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+
 
 class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,7 +12,8 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(R.layout.register)
     }
 
-    fun farmersClicked(view: View){
-        setContentView(R.layout.activity_scrolling)
+    fun farmersClicked(view: View?) {
+        val i = Intent(this, FarmersActivity::class.java)
+        startActivity(i)
     }
 }
