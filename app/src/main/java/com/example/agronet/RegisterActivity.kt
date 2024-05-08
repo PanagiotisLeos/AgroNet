@@ -1,11 +1,13 @@
 package com.example.agronet
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -56,6 +58,18 @@ class RegisterActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 // Τίποτα δεν έχει επιλεγεί, δεν χρειάζεται να γίνει κάτι εδώ
             }
+        }
+
+        // Εύρεση του κουμπιού "Sign Up"
+        val buttonSignUp: Button = findViewById(R.id.signUpButton)
+
+        // Ορισμός ακροατή για το κουμπί "Sign Up"
+        buttonSignUp.setOnClickListener {
+            // Μετάβαση στην ProductActivity
+            val intent = Intent(this, ProductActivity::class.java)
+            startActivity(intent)
+            // Προαιρετικό: Κλείσιμο της τρέχουσας δραστηριότητας
+            finish()
         }
     }
 }
