@@ -49,11 +49,8 @@
         app:layout_constraintTop_toBottomOf="@+id/search_bar"
         tools:layout_editor_absoluteX="12dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
 
-</ScrollView>
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:background="@color/black"
