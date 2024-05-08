@@ -156,7 +156,8 @@
         android:padding="16dp"
         android:weightSum="3"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="595dp">
+        tools:layout_editor_absoluteY="595dp"
+        tools:ignore="MissingConstraints">
 
         <TextView
             style="@style/Black_textStyle.Style"
@@ -193,18 +194,18 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/productCarousel"
+        android:id="@+id/productRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_above="@id/footer"
-        android:layout_below="@id/statistics"
-        android:clipToPadding="false"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:scrollbars="horizontal"
+        android:layout_height="0dp"
+        android:layout_above="@+id/footer"
+        android:layout_below="@+id/statistics"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/footer"
+        app:layout_constraintTop_toBottomOf="@+id/statistics"
+        app:layout_constraintVertical_bias="0.0"
+        app:spanCount="3"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="708dp"
-        tools:ignore="MissingConstraints" />
+        tools:listitem="@layout/item_product" />
 
     <LinearLayout
         android:id="@+id/footer"
