@@ -8,16 +8,13 @@
     <string name="dont">Don\'t have an account?</string>
     <string name="enter_your_password_here">Enter your password here...</string>
     <string name="choose_a_profile">Choose a profile...</string>
-<<<<<<< HEAD
+
     <string name="title_activity_scrolling">ScrollingActivity</string>
-=======
-<<<<<<< Updated upstream
-=======
-    <string name="title_activity_scrolling">ScrollingActivity</string>
+
     <string name="Products">Products</string>
     <string name="Cart">Cart</string>
     <string name="Farmers">Farmers</string>
->>>>>>> master
+
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -108,8 +105,4 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
->>>>>>> master
 </resources>
