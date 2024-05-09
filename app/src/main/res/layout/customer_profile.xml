@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F0D0"
+    android:background="#E0F7FA"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Farmer Info -->
+        <!-- Consumer Info -->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -22,7 +22,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/consumerProfileTitle"
                 style="@style/logoStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,16 +37,14 @@
                 android:layout_height="40dp"
                 android:src="@drawable/user_profile"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView"
+                app:layout_constraintStart_toEndOf="@+id/consumerProfileTitle"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="16dp"
-                />
+                android:layout_marginTop="16dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         <LinearLayout
-            android:id="@+id/farmerInfo"
+            android:id="@+id/consumerInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
@@ -54,53 +52,45 @@
             android:padding="16dp">
 
             <ImageView
-                android:id="@+id/farmerImage"
+                android:id="@+id/consumerImage"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginBottom="8dp"
-                android:src="@drawable/farmer_photo" />
+                android:src="@drawable/customer" />
 
             <TextView
+                android:id="@+id/consumerName"
                 style="@style/Black_textStyle.Style"
-                android:id="@+id/farmerName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:text="Antonios Stivaktakis"
+                android:text="Maria Papadopoulou"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
                 style="@style/Black_textStyle.Style"
-                android:id="@+id/farmerLocation"
+                android:id="@+id/consumerLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Individual Farmer, Heraklion, Crete"
+                android:text="Heraklion, Crete"
                 android:textSize="16sp" />
 
-            <ImageView
-                android:id="@+id/bioCertification"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="8dp"
-                android:src="@drawable/bio_badge" />
-
             <TextView
-                android:id="@+id/farmerDescription"
+                android:id="@+id/consumerDescription"
                 style="@style/Black_textStyle.Style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:gravity="center_horizontal"
                 android:paddingTop="8dp"
-                android:text="My name is Antonios Stivaktakis, and I take great pride in our family-owned farms, where we produce grapes, olive oil, and tomatoes. For generations, we've dedicated ourselves to cultivating these crops with care and passion, utilizing sustainable practices that honor the land and its resources."
+                android:text="Hello, I'm Maria Papadopoulou, a passionate advocate for locally-sourced, organic food. I love supporting local farmers and enjoy cooking with the freshest ingredients available. My favorite products are the ones that come straight from the farms of Crete."
                 android:textSize="14sp" />
 
         </LinearLayout>
 
         <!-- New LinearLayout for the star and phone buttons -->
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -110,37 +100,33 @@
             android:layout_marginBottom="14dp">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/starButton"
+                android:id="@+id/favoriteButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/farmers_button"
                 android:drawableTop="@drawable/star"
                 android:gravity="center"
                 android:padding="8dp"
-                android:text="120"
+                android:text="Favorites"
                 android:textColor="@android:color/black"
                 android:elevation="4dp"
                 android:layout_margin="4dp"
                 android:textSize="14sp" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/phoneButton"
+                android:id="@+id/contactButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:background="@drawable/farmers_button"
-                android:drawableTop="@drawable/phone"
+                android:drawableTop="@drawable/corn2"
                 android:elevation="4dp"
                 android:gravity="center"
                 android:padding="8dp"
-                android:text="Contact"
+                android:text="Corns"
                 android:textColor="@android:color/black" />
 
         </LinearLayout>
-
-
-
-
 
         <!-- Actions -->
         <LinearLayout
@@ -155,38 +141,36 @@
             android:layout_marginBottom="16dp">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/addProduct"
+                android:id="@+id/viewOrders"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/farmers_button"
-                android:text="Add products here..."
-                android:textSize="12sp"
+                android:text="View Orders"
                 android:textColor="@android:color/black" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/addFarm"
+                android:id="@+id/editProfile"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:text="Add farms here..."
-                android:textSize="12sp"
                 android:background="@drawable/farmers_button"
+                android:text="Edit Profile"
                 android:textColor="@android:color/black" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/addCollaboration"
+                android:id="@+id/settings"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/farmers_button"
-                android:text="Add collaborations "
-                android:textSize="12sp"
+                android:text="Settings"
                 android:textColor="@android:color/black" />
         </LinearLayout>
 
+        <!-- Order Statistics -->
         <LinearLayout
             android:id="@+id/statistics"
             android:layout_width="match_parent"
@@ -205,12 +189,11 @@
                 android:gravity="center">
 
                 <TextView
-
-                    android:id="@+id/totalProducts"
+                    android:id="@+id/totalOrders"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="63 products"
+                    android:text="20 Orders"
                     android:textSize="14sp" />
 
                 <View
@@ -235,12 +218,11 @@
                 android:gravity="center">
 
                 <TextView
-
-                    android:id="@+id/totalFarms"
+                    android:id="@+id/totalFavorites"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="6 farms"
+                    android:text="15 Favorites"
                     android:textSize="16sp" />
 
                 <View
@@ -265,12 +247,11 @@
                 android:gravity="center">
 
                 <TextView
-
-                    android:id="@+id/totalCollaborations"
+                    android:id="@+id/totalReviews"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="4 collaborations"
+                    android:text="5 Reviews"
                     android:textSize="14sp" />
 
                 <View
@@ -282,14 +263,23 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Products RecyclerView -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recommended Products"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/productRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:nestedScrollingEnabled="false"
-            app:spanCount="3"
+            app:spanCount="2"
             tools:listitem="@layout/item_product" />
 
         <!-- Footer -->
@@ -319,17 +309,17 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="My orders"
+                android:text="My Orders"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/navigationFarmers"
+                android:id="@+id/navigationConsumers"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Farmers"
+                android:text="Consumers"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
         </LinearLayout>

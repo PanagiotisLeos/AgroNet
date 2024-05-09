@@ -143,49 +143,6 @@
 
 
         <!-- Actions -->
-        <LinearLayout
-            android:id="@+id/actions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="8dp"
-            android:weightSum="3"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/addProduct"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/farmers_button"
-                android:text="Add products here..."
-                android:textSize="12sp"
-                android:textColor="@android:color/black" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/addFarm"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:text="Add farms here..."
-                android:textSize="12sp"
-                android:background="@drawable/farmers_button"
-                android:textColor="@android:color/black" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/addCollaboration"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/farmers_button"
-                android:text="Add collaborations "
-                android:textSize="12sp"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/statistics"
