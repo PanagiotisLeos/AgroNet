@@ -13,7 +13,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun farmersClicked(view: View?) {
-        val i = Intent(this, FarmersActivity::class.java)
+        val i = Intent(this, MainActivity::class.java)
         startActivity(i)
     }
 }
