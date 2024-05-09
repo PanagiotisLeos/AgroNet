@@ -30,8 +30,14 @@
 
     </style>
 
+
     <style name="CircularImageView" parent="">
         <item name="cornerSize">50%</item>
+
+    <style name="Black_textStyle.Style" parent="@android:style/Widget.EditText">
+        <item name="fontFamily">@font/itim</item>
+        <item name="android:textColor">@color/black</item>
+
     </style>
 
     <style name="BottomNavigationStyle" parent="Widget.MaterialComponents.BottomNavigationView">
