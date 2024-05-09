@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_cart -> {
-                    loadFragment(FarmersFragment())
+                    loadFragment(CartFragment())
                     true
                 }
                 else -> false
