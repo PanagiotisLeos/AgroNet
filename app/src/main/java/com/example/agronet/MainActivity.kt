@@ -2,9 +2,8 @@ package com.example.agronet
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.navigation.ui.setupWithNavController
 
 class MainActivity : AppCompatActivity() {
 
@@ -12,15 +11,32 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
-        val navController = navHostFragment?.findNavController()
+        val bottomNavigationView: BottomNavigationView = findViewById(R.id.navigation)
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_products -> {
+                    loadFragment(ProductsFragment())
+                    true
+                }
+                R.id.navigation_farmers -> {
+                    loadFragment(FarmersFragment())
+                    true
+                }
+                R.id.navigation_cart -> {
+                    loadFragment(FarmersFragment())
+                    true
+                }
+                else -> false
+            }
+        }
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.navigation)
-        bottomNav.setupWithNavController(navController!!)
+        // Set the initial fragment
+        bottomNavigationView.selectedItemId = R.id.navigation_farmers
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)?.findNavController()
-        return navController?.navigateUp() ?: super.onSupportNavigateUp()
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
     }
 }

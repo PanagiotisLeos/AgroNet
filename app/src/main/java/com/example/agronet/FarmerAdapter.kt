@@ -1,8 +1,6 @@
 package com.example.agronet
 
 import android.graphics.PorterDuff
-import android.media.Image
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.agronet.R
 
-class FarmerAdapter(private val farmersList: List<Farmer>) :
+class FarmerAdapter(private var farmersList: List<Farmer>) :
     RecyclerView.Adapter<FarmerAdapter.FarmerViewHolder>() {
 
     class FarmerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -28,26 +25,22 @@ class FarmerAdapter(private val farmersList: List<Farmer>) :
         return FarmerViewHolder(view)
     }
 
-    private fun starColor (imageView: ImageView){
-
-    }
-
     override fun onBindViewHolder(holder: FarmerViewHolder, position: Int) {
         val farmer = farmersList[position]
         holder.name.text = farmer.name
         holder.location.text = farmer.location
         holder.imageView.setImageResource(farmer.imageId)
         holder.farmType.text = farmer.farmerType
-        holder.imageView.setOnClickListener{
-            val defaultColor = ContextCompat.getColor(holder.imageView.context, R.color.default_color)
+        holder.imageView.setOnClickListener {
             val clickedColor = ContextCompat.getColor(holder.imageView.context, R.color.clicked_color)
-
             holder.imageView.setColorFilter(clickedColor, PorterDuff.Mode.SRC_IN)
         }
     }
 
-
-
     override fun getItemCount() = farmersList.size
 
+    fun setData(newFarmers: List<Farmer>) {
+        farmersList = newFarmers
+        notifyDataSetChanged()
+    }
 }
