@@ -45,6 +45,12 @@
 
         <activity android:name=".RegisterActivity" />
 
+        <activity android:name=".FarmerProfileActivity" />
+
+
+        <activity android:name=".AddProductActivity" />
+
+
     </application>
 
 </manifest>
