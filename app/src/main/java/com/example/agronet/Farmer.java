@@ -1,17 +1,19 @@
 package com.example.agronet;
-public class Farmer {
-    private String name;
+public class Farmer extends User {
+    String id;
+    String name;
     private String location;
-    private String id;
     private int imageId;
     private String farmerType;
+    private String description;
 
-    public Farmer(String name, String location, int imageId, String farmerType
+    public Farmer(String name, String location, int imageId, String farmerType, String description
     ) {
         this.name = name;
         this.location = location;
         this.imageId = imageId;
         this.farmerType = farmerType;
+        this.description = description;
 
     }
 
@@ -51,6 +53,10 @@ public class Farmer {
 
     public void setFarmerType(String farmerType) {
         this.farmerType = farmerType;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
 }
