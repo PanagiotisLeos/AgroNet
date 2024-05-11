@@ -69,7 +69,7 @@ class LoginActivity : AppCompatActivity() {
             // Connect to the MariaDB database
             Class.forName("org.mariadb.jdbc.Driver")
             connection = DriverManager.getConnection(
-                "jdbc:mariadb://172.20.10.10:3306/agronetdb",
+                "jdbc:mariadb://192.168.2.13:3306/agronetdb",
                 "root",
                 "@gRTen#"
             )

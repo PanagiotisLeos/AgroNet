@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +27,13 @@ class FarmersFragment : Fragment() {
         farmerAdapter = FarmerAdapter(emptyList())
         recyclerView.adapter = farmerAdapter
 
+        val userProfileImageView: ImageView = view.findViewById(R.id.go_to_profile)
+        userProfileImageView.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, UserProfileFragment())
+                .addToBackStack(null)
+                .commit()
+        }
         fetchDataFromDatabase()
 
         return view
@@ -38,7 +46,7 @@ class FarmersFragment : Fragment() {
                 // Establish a connection to your MariaDB database
                 Class.forName("org.mariadb.jdbc.Driver")
                 connection = DriverManager.getConnection(
-                    "jdbc:mariadb://172.20.10.10:3306/agronetdb", // Replace with your IP
+                    "jdbc:mariadb://192.168.2.13:3306/agronetdb", // Replace with your IP
                     "root", // Replace with your username
                     "@gRTen#" // Replace with your password
                 )

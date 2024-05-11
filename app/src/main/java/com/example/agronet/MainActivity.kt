@@ -1,6 +1,7 @@
 package com.example.agronet
 
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -30,8 +31,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Set the initial fragment
-        bottomNavigationView.selectedItemId = R.id.navigation_farmers
     }
 
     private fun loadFragment(fragment: Fragment) {
