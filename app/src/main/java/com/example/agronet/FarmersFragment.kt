@@ -46,23 +46,25 @@ class FarmersFragment : Fragment() {
                 // Establish a connection to your MariaDB database
                 Class.forName("org.mariadb.jdbc.Driver")
                 connection = DriverManager.getConnection(
-                    "jdbc:mariadb://192.168.2.13:3306/agronetdb", // Replace with your IP
+                    "jdbc:mariadb://192.168.2.7:3306/agronetdb", // Replace with your IP
                     "root", // Replace with your username
-                    "@gRTen#" // Replace with your password
+                    "" // Replace with your password
                 )
 
                 // Execute a query to fetch farmer data
                 val statement = connection.createStatement()
-                val resultSet = statement.executeQuery("SELECT * FROM farmers")
+                val resultSet = statement.executeQuery("SELECT * FROM farmer")
 
                 // Parse the retrieved data into Farmer objects
                 val farmersList = mutableListOf<Farmer>()
                 while (resultSet.next()) {
-                    val name = resultSet.getString("name")
+                    val fname = resultSet.getString("first_name")
+                    val lname = resultSet.getString("last_name")
                     val location = resultSet.getString("location")
-                    val profileImageResourceId = R.drawable.gmail // Default image resource ID
-                    val type = resultSet.getString("type")
-                    val farmer = Farmer(name, location, profileImageResourceId,name, type)
+                    val profImg = resultSet.getBytes("prof_image");
+                    val type = resultSet.getString("type");
+                    val description = resultSet.getString("description")
+                    val farmer = Farmer(fname, lname, location, profImg, description,type)
                     farmersList.add(farmer)
                 }
 

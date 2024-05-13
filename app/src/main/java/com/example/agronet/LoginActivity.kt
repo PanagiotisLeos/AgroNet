@@ -3,6 +3,7 @@ package com.example.agronet
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View.OnFocusChangeListener
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -17,6 +18,7 @@ import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.SQLException
 
+
 class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,15 +27,27 @@ class LoginActivity : AppCompatActivity() {
 
         val regButton = findViewById<Button>(R.id.register_button)
         val loginButton = findViewById<Button>(R.id.login_button)
+        val emailInput = findViewById<EditText>(R.id.email_input)
+        val passwordInput = findViewById<EditText>(R.id.password_input)
+
+        emailInput.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) emailInput.setHint(
+                ""
+            ) else emailInput.setHint("Email")
+        }
+
+        passwordInput.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) passwordInput.setHint(
+                ""
+            ) else passwordInput.setHint("Password")
+        }
 
         regButton.setOnClickListener {
             val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
             startActivity(intent)
         }
-
         loginButton.setOnClickListener {
-            val emailInput = findViewById<EditText>(R.id.email_input)
-            val passwordInput = findViewById<EditText>(R.id.password_input)
+
 
             val email = emailInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
@@ -59,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
                         finish()
                     }
                     1 -> {
-                        val intent = Intent(this@LoginActivity, FarmersActivity::class.java)
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
                         startActivity(intent)
                         finish()
                     }

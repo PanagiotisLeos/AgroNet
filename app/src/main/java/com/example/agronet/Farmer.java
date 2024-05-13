@@ -1,17 +1,25 @@
 package com.example.agronet;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.sql.Blob;
+
 public class Farmer extends User {
-    String id;
-    String name;
+    int id;
+    String fname;
+    String lname;
     private String location;
-    private int imageId;
+    private byte[] profile_img;
     private String farmerType;
     private String description;
 
-    public Farmer(String name, String location, int imageId, String farmerType, String description
+    public Farmer(String fname,String lname, String location, byte[] profile_img, String farmerType, String description
     ) {
-        this.name = name;
+        this.fname = fname;
+        this.lname = lname;
         this.location = location;
-        this.imageId = imageId;
+        this.profile_img = profile_img;
         this.farmerType = farmerType;
         this.description = description;
 
@@ -19,11 +27,11 @@ public class Farmer extends User {
 
     // Getters and setters for each field
     public String getName() {
-        return name;
+        return fname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String fname) {
+        this.fname = fname;
     }
 
     public String getLocation() {
@@ -34,18 +42,18 @@ public class Farmer extends User {
         this.location = location;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public int getImageId() {
-        return imageId;
+    public byte[] getprofile_img() {
+        return profile_img;
     }
-    public void setImageId(int imageId) { this.imageId = imageId; }
+    public void setprofile_img(byte[] profile_img) { this.profile_img = profile_img; }
 
     public String getFarmerType() {
         return farmerType;
@@ -58,5 +66,6 @@ public class Farmer extends User {
     public String getDescription() {
         return description;
     }
+
 
 }

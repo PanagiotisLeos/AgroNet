@@ -56,6 +56,7 @@ dependencies {
     implementation ("org.mariadb.jdbc:mariadb-java-client:2.1.2")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
 
     androidTestImplementation ("androidx.navigation:navigation-testing:$2.7.7")
 
