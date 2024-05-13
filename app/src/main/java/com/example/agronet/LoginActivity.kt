@@ -2,11 +2,11 @@ package com.example.agronet
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,6 +14,7 @@ import kotlinx.coroutines.withContext
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.PreparedStatement
+import java.sql.ResultSet
 import java.sql.SQLException
 
 class LoginActivity : AppCompatActivity() {
@@ -47,29 +48,38 @@ class LoginActivity : AppCompatActivity() {
 
     private fun loginUser(email: String, password: String) {
         lifecycleScope.launch {
-            val isValidUser = withContext(Dispatchers.IO) {
+            val (isValidUser, userType) = withContext(Dispatchers.IO) {
                 validateUser(email, password)
             }
-
             if (isValidUser) {
-                val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                startActivity(intent)
-                finish()
+                when (userType) {
+                    0 -> {
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java) // Replace with CustomerActivity if needed
+                        startActivity(intent)
+                        finish()
+                    }
+                    1 -> {
+                        val intent = Intent(this@LoginActivity, FarmersActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                }
             } else {
-                Toast.makeText(this@LoginActivity, "Invalid username or password", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@LoginActivity, "Invalid email or password", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun validateUser(email: String, password: String): Boolean {
+    private fun validateUser(email: String, password: String): Pair<Boolean, Int?> {
         var connection: Connection? = null
         var preparedStatement: PreparedStatement? = null
+        var resultSet: ResultSet? = null
 
         return try {
             // Connect to the MariaDB database
             Class.forName("org.mariadb.jdbc.Driver")
             connection = DriverManager.getConnection(
-                "jdbc:mariadb://192.168.1.67:3306/agronetdb",
+                "jdbc:mariadb://192.168.2.7:3306/agronetdb",
                 "root",
                 ""
             )
@@ -85,24 +95,29 @@ class LoginActivity : AppCompatActivity() {
             Log.d("LoginActivity", "SQL query prepared: $sql")
 
             // Execute the query
-            val resultSet = preparedStatement.executeQuery()
+            resultSet = preparedStatement.executeQuery()
 
             Log.d("LoginActivity", "SQL query executed")
 
             // Check if a user with the given credentials exists
-            val userExists = resultSet.next()
-            Log.d("LoginActivity", "User exists: $userExists")
-
-            userExists
+            if (resultSet.next()) {
+                val userType = resultSet.getInt("user_type")
+                Log.d("LoginActivity", "User exists: true, userType: $userType")
+                Pair(true, userType)
+            } else {
+                Log.d("LoginActivity", "User exists: false")
+                Pair(false, null)
+            }
         } catch (e: SQLException) {
             Log.e("LoginActivity", "SQL Exception: ${e.message}", e)
-            false
+            Pair(false, null)
         } catch (e: ClassNotFoundException) {
             Log.e("LoginActivity", "Class Not Found Exception: ${e.message}", e)
-            false
+            Pair(false, null)
         } finally {
             try {
                 // Close database resources
+                resultSet?.close()
                 preparedStatement?.close()
                 connection?.close()
                 Log.d("LoginActivity", "Database resources closed")

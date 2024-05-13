@@ -52,7 +52,7 @@ class FarmersActivity : AppCompatActivity() {
                     val location = resultSet.getString("location")
                     val profileImageResourceId = R.drawable.gmail // Default image resource ID
                     val type = resultSet.getString("type")
-                    val farmer = Farmer(name, location, profileImageResourceId, type)
+                    val farmer = Farmer(name, location, profileImageResourceId, name,type)
                     farmersList.add(farmer)
                 }
 
