@@ -15,7 +15,7 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
 
-class FarmersFragment : Fragment() {
+class FarmersFragment : Fragment(),OnFarmerClickListener {
 
     private lateinit var farmerAdapter: FarmerAdapter
 
@@ -24,15 +24,10 @@ class FarmersFragment : Fragment() {
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view_farmers)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = farmerAdapter
 
-        val userProfileImageView: ImageView = view.findViewById(R.id.go_to_profile)
-        userProfileImageView.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, UserProfileFragment())
-                .addToBackStack(null)
-                .commit()
-        }
+        // Initialize the adapter with an empty list initially
+        farmerAdapter = FarmerAdapter(listOf(), this)
+        recyclerView.adapter = farmerAdapter
 
         fetchDataFromDatabase()
 
@@ -40,11 +35,11 @@ class FarmersFragment : Fragment() {
     }
 
 
-    fun onFarmerClick(farmer: Farmer) {
-        val newFragment = FarmerDetailFragment.newInstance(farmer)
+    override fun onFarmerClick(farmerId: Int) {
+        val profileFragment = FarmerDetailsFragment.newInstance(farmerId)
         parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, newFragment)
-            .addToBackStack(null)
+            .replace(R.id.fragment_container, profileFragment)
+            .addToBackStack(null) // Add to back stack for navigational purposes
             .commit()
     }
 
