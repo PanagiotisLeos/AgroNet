@@ -17,7 +17,8 @@ class FarmerAdapter(private var farmersList: List<Farmer>) :
 
     class FarmerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val farmerImg: ImageView = view.findViewById(R.id.farmer_image)
-        val name: TextView = view.findViewById(R.id.farmer_name)
+        val fname: TextView = view.findViewById(R.id.farmer_name)
+        val lname: TextView = view.findViewById(R.id.farmer_last_name)
         val location: TextView = view.findViewById(R.id.farm_location)
         val farmType: TextView = view.findViewById(R.id.farm_type)
 
@@ -32,7 +33,8 @@ class FarmerAdapter(private var farmersList: List<Farmer>) :
 
     override fun onBindViewHolder(holder: FarmerViewHolder, position: Int) {
         val farmer = farmersList[position]
-        holder.name.text = farmer.fname
+        holder.fname.text = farmer.fname
+        holder.lname.text = farmer.lname
         holder.location.text = farmer.location
         holder.farmType.text = farmer.farmerType
 
@@ -50,7 +52,6 @@ class FarmerAdapter(private var farmersList: List<Farmer>) :
             .placeholder(R.drawable.farmer) // optional placeholder image
             .error(R.drawable.gmail) // optional error image
             .into(holder.farmerImg)
-
     }
 
 

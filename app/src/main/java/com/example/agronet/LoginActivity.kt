@@ -90,13 +90,7 @@ class LoginActivity : AppCompatActivity() {
         var resultSet: ResultSet? = null
 
         return try {
-            // Connect to the MariaDB database
-            Class.forName("org.mariadb.jdbc.Driver")
-            connection = DriverManager.getConnection(
-                "jdbc:mariadb://192.168.2.7:3306/agronetdb",
-                "root",
-                ""
-            )
+            connection = DatabaseManager.getConnection()
 
             Log.d("LoginActivity", "Database connection established")
 

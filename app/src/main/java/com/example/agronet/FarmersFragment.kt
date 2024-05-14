@@ -43,15 +43,8 @@ class FarmersFragment : Fragment() {
         Thread {
             var connection: Connection? = null
             try {
-                // Establish a connection to your MariaDB database
-                Class.forName("org.mariadb.jdbc.Driver")
-                connection = DriverManager.getConnection(
-                    "jdbc:mariadb://192.168.2.7:3306/agronetdb", // Replace with your IP
-                    "root", // Replace with your username
-                    "" // Replace with your password
-                )
+                connection = DatabaseManager.getConnection()
 
-                // Execute a query to fetch farmer data
                 val statement = connection.createStatement()
                 val resultSet = statement.executeQuery("SELECT * FROM farmer")
 
