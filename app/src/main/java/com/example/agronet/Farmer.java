@@ -51,7 +51,8 @@ public class Farmer extends User implements Parcelable {
         }
     };
 
-    public Farmer(String fname, String lname, String location, byte[] profile_img, String farmerType, String description) {
+    public Farmer(int id, String fname, String lname, String location, byte[] profile_img, String farmerType, String description) {
+        this.id = id;
         this.fname = fname;
         this.lname = lname;
         this.location = location;

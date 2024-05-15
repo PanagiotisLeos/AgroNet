@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseManager {
-    private static final String URL = "jdbc:mariadb://150.140.234.110:3306/agronetdb";
+    private static final String URL = "jdbc:mariadb://192.168.2.7:3306/agronetdb";
     private static final String USER = "root";
     private static final String PASSWORD = "";
 

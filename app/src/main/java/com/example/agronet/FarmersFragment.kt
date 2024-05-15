@@ -54,13 +54,14 @@ class FarmersFragment : Fragment(),OnFarmerClickListener {
 
                 val farmersList = mutableListOf<Farmer>()
                 while (resultSet.next()) {
+                    val id = resultSet.getInt("id")
                     val fname = resultSet.getString("first_name")
                     val lname = resultSet.getString("last_name")
                     val location = resultSet.getString("location")
                     val profImg = resultSet.getBytes("prof_image")
                     val type = resultSet.getString("type")
                     val description = resultSet.getString("description")
-                    val farmer = Farmer(fname, lname, location, profImg, description, type)
+                    val farmer = Farmer(id, fname, lname, location, profImg, description, type)
                     farmersList.add(farmer)
                 }
 
