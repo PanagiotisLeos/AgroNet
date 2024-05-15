@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
     }
 
     private fun loadFragment(fragment: Fragment) {

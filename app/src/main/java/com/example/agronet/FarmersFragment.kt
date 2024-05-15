@@ -8,39 +8,43 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
 
-class FarmersFragment : Fragment() {
+class FarmersFragment : Fragment(),OnFarmerClickListener {
 
     private lateinit var farmerAdapter: FarmerAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_farmers, container, false)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view_farmers)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        farmerAdapter = FarmerAdapter(emptyList())
+
+        // Initialize the adapter with an empty list initially
+        farmerAdapter = FarmerAdapter(listOf(), this)
         recyclerView.adapter = farmerAdapter
 
-        val userProfileImageView: ImageView = view.findViewById(R.id.go_to_profile)
-        userProfileImageView.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, UserProfileFragment())
-                .addToBackStack(null)
-                .commit()
-        }
         fetchDataFromDatabase()
 
         return view
     }
 
+
+    override fun onFarmerClick(farmerId: Int) {
+        val profileFragment = FarmerDetailsFragment.newInstance(farmerId)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, profileFragment)
+            .addToBackStack(null) // Add to back stack for navigational purposes
+            .commit()
+    }
+
     private fun fetchDataFromDatabase() {
-        Thread {
+        CoroutineScope(Dispatchers.IO).launch {
             var connection: Connection? = null
             try {
                 connection = DatabaseManager.getConnection()
@@ -48,26 +52,23 @@ class FarmersFragment : Fragment() {
                 val statement = connection.createStatement()
                 val resultSet = statement.executeQuery("SELECT * FROM farmer")
 
-                // Parse the retrieved data into Farmer objects
                 val farmersList = mutableListOf<Farmer>()
                 while (resultSet.next()) {
+                    val id = resultSet.getInt("id")
                     val fname = resultSet.getString("first_name")
                     val lname = resultSet.getString("last_name")
                     val location = resultSet.getString("location")
-                    val profImg = resultSet.getBytes("prof_image");
-                    val type = resultSet.getString("type");
+                    val profImg = resultSet.getBytes("prof_image")
+                    val type = resultSet.getString("type")
                     val description = resultSet.getString("description")
-                    val farmer = Farmer(fname, lname, location, profImg, description,type)
+                    val farmer = Farmer(id, fname, lname, location, profImg, description, type)
                     farmersList.add(farmer)
                 }
 
-                // Update the UI with the retrieved data
                 activity?.runOnUiThread {
                     farmerAdapter.setData(farmersList)
                 }
 
-            } catch (e: ClassNotFoundException) {
-                e.printStackTrace()
             } catch (e: SQLException) {
                 e.printStackTrace()
             } finally {
@@ -77,6 +78,6 @@ class FarmersFragment : Fragment() {
                     e.printStackTrace()
                 }
             }
-        }.start()
+        }
     }
 }
