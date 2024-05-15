@@ -25,6 +25,14 @@ class FarmersFragment : Fragment(),OnFarmerClickListener {
         val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view_farmers)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
+        val userProfileImageView: ImageView = view.findViewById(R.id.go_to_profile)
+        userProfileImageView.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, CustomerProfileFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
         // Initialize the adapter with an empty list initially
         farmerAdapter = FarmerAdapter(listOf(), this)
         recyclerView.adapter = farmerAdapter
