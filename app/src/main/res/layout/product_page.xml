@@ -4,25 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F0D0">
+    android:background="#F0F0D0"
+    tools:context=".ProductPageFragment">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:layout_above="@id/bottom_navigation">
-    <!-- Header -->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <!-- Header -->
+
+            <!-- Top Selling Products Section -->
             <LinearLayout
                 android:id="@+id/header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#F0F0D0"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:background="#F0F0D0">
+                android:padding="16dp">
 
                 <!-- Top Bar with Logo and Profile Icon -->
                 <RelativeLayout
@@ -46,8 +51,7 @@
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/titan_one"
                         android:text="AgroNet"
-                        android:textSize="24sp"
-                         />
+                        android:textSize="24sp" />
 
                     <ImageView
                         android:id="@+id/profile_icon"
@@ -89,10 +93,8 @@
                 </RelativeLayout>
             </LinearLayout>
 
-            <!-- Top Selling Products Section -->
             <LinearLayout
                 android:id="@+id/top_selling_section"
-                android:layout_below="@id/header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -108,35 +110,19 @@
                     android:shadowColor="#000000"
                     android:shadowDx="3"
                     android:shadowDy="3"
-                    android:shadowRadius="2"/>
+                    android:shadowRadius="2" />
 
-                <HorizontalScrollView
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/top_selling_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="none">
-
-                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- Include item_product.xml here -->
-                    <include layout="@layout/item_product"/>
-                    <include layout="@layout/item_product"/>
-                    <include layout="@layout/item_product"/>
-
-                    <!-- Add more items similarly -->
-
-                </LinearLayout>
-
-                        <!-- Add more items similarly -->
-                </HorizontalScrollView>
+                    android:orientation="horizontal"
+                    tools:listitem="@layout/item_product" />
             </LinearLayout>
 
             <!-- Imperfect Products Section -->
             <LinearLayout
                 android:id="@+id/imperfect_products_section"
-                android:layout_below="@id/top_selling_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -152,37 +138,19 @@
                     android:shadowColor="#000000"
                     android:shadowDx="3"
                     android:shadowDy="3"
-                    android:shadowRadius="2"/>
+                    android:shadowRadius="2" />
 
-                <HorizontalScrollView
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/imperfect_products_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="none">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <!-- Imperfect Product Items -->
-                        <!-- Repeat for each item -->
-                        <!-- Include item_product.xml here -->
-                        <include layout="@layout/item_product"/>
-                        <include layout="@layout/item_product"/>
-                        <include layout="@layout/item_product"/>
-
-                        <!-- Add more items similarly -->
-
-                        <!-- Add more items similarly -->
-
-                    </LinearLayout>
-                </HorizontalScrollView>
+                    android:orientation="horizontal"
+                    tools:listitem="@layout/item_product" />
             </LinearLayout>
 
             <!-- Fast Shipped Section -->
             <LinearLayout
                 android:id="@+id/fast_shipped_section"
-                android:layout_below="@id/imperfect_products_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -198,34 +166,14 @@
                     android:shadowColor="#000000"
                     android:shadowDx="3"
                     android:shadowDy="3"
-                    android:shadowRadius="2"/>
+                    android:shadowRadius="2" />
 
-                <HorizontalScrollView
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/fast_shipped_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="none">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <!-- Imperfect Product Items -->
-                        <!-- Repeat for each item -->
-                        <!-- Include item_product.xml here -->
-                        <include layout="@layout/item_product"/>
-                        <include layout="@layout/item_product"/>
-                        <include layout="@layout/item_product"/>
-
-                        <!-- Add more items similarly -->
-
-                        <!-- Add more items similarly -->
-                        </LinearLayout>
-
-                        <!-- Add more items similarly -->
-
-
-                </HorizontalScrollView>
+                    android:orientation="horizontal"
+                    tools:listitem="@layout/item_product" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
@@ -304,3 +252,5 @@
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
+
+

@@ -8,8 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class ProductAdapter(private val productContext: Context, private val productList: List<Product>) :
-    RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+class ProductsAdapter(private val productContext: Context, private val productList: List<Product>) :
+    RecyclerView.Adapter<ProductsAdapter.ProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(productContext).inflate(R.layout.item_product, parent, false)
