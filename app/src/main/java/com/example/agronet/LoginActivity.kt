@@ -68,6 +68,7 @@ class LoginActivity : AppCompatActivity() {
             if (isValidUser) {
                 when (userType) {
                     0 -> {
+                        SessionManager.createLoginSession("","customer")
                         val intent = Intent(this@LoginActivity, MainActivity::class.java) // Replace with CustomerActivity if needed
                         startActivity(intent)
                         finish()
@@ -110,6 +111,8 @@ class LoginActivity : AppCompatActivity() {
             // Check if a user with the given credentials exists
             if (resultSet.next()) {
                 val userType = resultSet.getInt("user_type")
+                val userId = resultSet.getInt("id")
+                SessionManager.createLoginSession("$userId","$userType")
                 Log.d("LoginActivity", "User exists: true, userType: $userType")
                 Pair(true, userType)
             } else {

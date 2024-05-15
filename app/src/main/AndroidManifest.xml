@@ -31,7 +31,7 @@
             android:exported="false"
             android:theme="@style/Theme.AgroNet.NoActionBar" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".MainActivity"
             android:exported="true" >
 
             <intent-filter>
@@ -40,13 +40,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity" />
-
+        <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
-
         <activity android:name=".FarmerProfileActivity" />
-
-
         <activity android:name=".AddProductActivity" />
 
 
