@@ -18,19 +18,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // Load the ProductPageFragment
-        if (savedInstanceState == null) {
-            loadFragment(ProductPageFragment())
-        }
-
-        // Additional initialization logic if needed
-        enableEdgeToEdge()
-    }
-
- 
-
-    private fun enableEdgeToEdge() {
-        // Your existing method implementation
-    }
 
 
         //session
@@ -47,17 +34,20 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_products -> {
-                    loadFragment(ProductsFragment())
+                    loadFragment(ProductPageFragment())
                     true
                 }
+
                 R.id.navigation_farmers -> {
                     loadFragment(FarmersFragment())
                     true
                 }
+
                 R.id.navigation_cart -> {
                     loadFragment(CartFragment())
                     true
                 }
+
                 else -> false
             }
         }
