@@ -164,7 +164,6 @@
                 android:text="Add products here..."
                 android:textSize="12sp"
                 android:textColor="@android:color/black" />
-
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/addFarm"
                 android:layout_width="0dp"

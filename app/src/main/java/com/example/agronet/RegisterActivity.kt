@@ -70,10 +70,13 @@ class RegisterActivity : AppCompatActivity() {
             // Προαιρετικό: Κλείσιμο της τρέχουσας δραστηριότητας
             finish()
         }
+
+
     }
 
     fun farmersClicked(view: View?) {
         val i = Intent(this, MainActivity::class.java)
         startActivity(i)
+
     }
 }
