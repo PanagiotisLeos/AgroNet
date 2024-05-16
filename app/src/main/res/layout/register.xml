@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_bg"
-    tools:context=".MainActivity"
+    tools:context=".RegisterActivity"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="54dp">
 
@@ -90,6 +90,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/signUpButton"
+        android:onClick="farmersClicked"
         style="@style/LoginBtn"
         android:layout_width="270dp"
         android:layout_height="55dp"

@@ -13,7 +13,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class RegisterActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.register)
@@ -71,5 +70,13 @@ class RegisterActivity : AppCompatActivity() {
             // Προαιρετικό: Κλείσιμο της τρέχουσας δραστηριότητας
             finish()
         }
+
+
+    }
+
+    fun farmersClicked(view: View?) {
+        val i = Intent(this, MainActivity::class.java)
+        startActivity(i)
+
     }
 }

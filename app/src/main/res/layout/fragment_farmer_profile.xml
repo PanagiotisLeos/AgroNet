@@ -33,6 +33,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
+                android:id="@+id/go_to_profile"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/user_profile"
@@ -164,6 +165,7 @@
                 android:text="Add products here..."
                 android:textSize="12sp"
                 android:textColor="@android:color/black" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/addFarm"
                 android:layout_width="0dp"

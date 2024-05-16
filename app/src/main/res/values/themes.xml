@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.AgroNet" parent="Base.Theme.AgroNet" />
+    <style name="Theme.AgroNet.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.AgroNet.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.AgroNet.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

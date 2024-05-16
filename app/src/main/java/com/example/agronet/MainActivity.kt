@@ -1,9 +1,13 @@
 package com.example.agronet
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.google.android.material.bottomnavigation.BottomNavigationView
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,16 +26,47 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
     }
 
-    private fun loadFragment(fragment: Fragment) {
-        // Create fragment transaction
-        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        // Replace the container with the new fragment
-        transaction.replace(R.id.fragment_container, fragment)
-        // Commit the transaction
-        transaction.commit()
-    }
+ 
 
     private fun enableEdgeToEdge() {
         // Your existing method implementation
     }
+
+
+        //session
+        val sessionManager = SessionManager(
+            applicationContext
+        )
+        if (!sessionManager.isLoggedIn) {
+            val intent = Intent(this@MainActivity, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        val bottomNavigationView: BottomNavigationView = findViewById(R.id.navigation)
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_products -> {
+                    loadFragment(ProductsFragment())
+                    true
+                }
+                R.id.navigation_farmers -> {
+                    loadFragment(FarmersFragment())
+                    true
+                }
+                R.id.navigation_cart -> {
+                    loadFragment(CartFragment())
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
+    }
+
 }
