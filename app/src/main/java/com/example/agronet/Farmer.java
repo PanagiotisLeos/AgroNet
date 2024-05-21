@@ -23,6 +23,7 @@ public class Farmer extends User implements Parcelable {
         description = in.readString();
     }
 
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);

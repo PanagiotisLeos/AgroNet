@@ -1,8 +1,10 @@
 package com.example.agronet;
 
 public class User {
-    private int id;
-    private String name;
-    private String email;
+    public int id;
+    public String name;
+    public String email;
     private String password;
+
+
 }

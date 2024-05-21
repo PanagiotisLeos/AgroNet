@@ -110,9 +110,10 @@ class LoginActivity : AppCompatActivity() {
 
             // Check if a user with the given credentials exists
             if (resultSet.next()) {
-                val userType = resultSet.getInt("user_type")
                 val userId = resultSet.getInt("id")
+                val userType = resultSet.getInt("user_type")
                 SessionManager.createLoginSession("$userId","$userType")
+
                 Log.d("LoginActivity", "User exists: true, userType: $userType")
                 Pair(true, userType)
             } else {

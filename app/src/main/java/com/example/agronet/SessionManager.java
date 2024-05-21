@@ -2,7 +2,10 @@ package com.example.agronet;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import com.example.agronet.DatabaseManager;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class SessionManager {
@@ -28,7 +31,10 @@ public class SessionManager {
         editor.putString(KEY_USER_ID, userId);
         editor.putString(KEY_USER_TYPE, userType);
         editor.commit();
+
     }
+
+
 
     public boolean isLoggedIn() {
         return pref.getBoolean(IS_LOGIN, false);
@@ -39,6 +45,14 @@ public class SessionManager {
         user.put(KEY_USER_ID, pref.getString(KEY_USER_ID, null));
         user.put(KEY_USER_TYPE, pref.getString(KEY_USER_TYPE, null));
         return user;
+    }
+
+    public String getUserId() {
+        return KEY_USER_ID;
+    }
+
+    public String getUseType() {
+        return KEY_USER_TYPE;
     }
 
     public void logoutUser() {
