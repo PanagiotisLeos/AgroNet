@@ -1,24 +1,24 @@
 package com.example.agronet;
 
 public class Customer extends User{
-    String userId;
+    int userId;
     String fname;
     String lname;
     String email;
 
 
-    public Customer(String userId, String fname, String lname) {
+    public Customer(int userId, String fname, String lname) {
         this.userId = userId;
         this.fname = fname;
         this.lname = lname;
     }
 
     // Getters and Setters
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 

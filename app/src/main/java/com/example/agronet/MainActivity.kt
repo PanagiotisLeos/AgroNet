@@ -51,6 +51,9 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+        //Default fragment
+        loadFragment(ProductPageFragment())
+        bottomNavigationView.selectedItemId = R.id.navigation_products
     }
 
     private fun loadFragment(fragment: Fragment) {

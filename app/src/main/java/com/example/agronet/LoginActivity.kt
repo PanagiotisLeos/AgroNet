@@ -68,7 +68,7 @@ class LoginActivity : AppCompatActivity() {
             if (isValidUser) {
                 when (userType) {
                     0 -> {
-                        SessionManager.createLoginSession("","customer")
+                        SessionManager.createLoginSession("$","customer")
                         val intent = Intent(this@LoginActivity, MainActivity::class.java) // Replace with CustomerActivity if needed
                         startActivity(intent)
                         finish()

@@ -40,7 +40,7 @@ public class DatabaseManager {
             if (rs.next()) {
                 if ("0".equals(userType)) {
                     return new Customer(
-                            rs.getString("customer_id"),
+                            rs.getInt("customer_id"),
                             rs.getString("first_name"),
                             rs.getString("last_name")
                     );
