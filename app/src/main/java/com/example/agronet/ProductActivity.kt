@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 class ProductActivity : AppCompatActivity() {
 
     private lateinit var productRecyclerView: RecyclerView
-    private lateinit var productAdapter: ProductsAdapter
+    private lateinit var productAdapter: ProductAdapter
     private lateinit var productList: List<Product>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +29,7 @@ class ProductActivity : AppCompatActivity() {
             Product("Grapes", "3.00€ / per kg", R.drawable.bananas, R.drawable.farmer_photo)
         )
 
-        productAdapter = ProductsAdapter(this, productList)
+        productAdapter = ProductAdapter(this, productList)
         productRecyclerView.adapter = productAdapter
     }
 }

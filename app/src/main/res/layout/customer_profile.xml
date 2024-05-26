@@ -282,47 +282,7 @@
             app:spanCount="2"
             tools:listitem="@layout/item_product" />
 
-        <!-- Footer -->
-        <LinearLayout
-            android:id="@+id/footer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFA726"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginTop="16dp">
 
-            <TextView
-                android:id="@+id/navigationProducts"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Products"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/navigationMyOrders"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="My Orders"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/navigationConsumers"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Consumers"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-        </LinearLayout>
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

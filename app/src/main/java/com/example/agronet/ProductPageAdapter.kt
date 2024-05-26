@@ -1,6 +1,7 @@
 package com.example.agronet
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,16 @@ class ProductPageAdapter(private val productContext: Context, private val produc
         holder.productPrice.text = product.price
         holder.productImage.setImageResource(product.imageResId)
         holder.postedByImageView.setImageResource(product.postedByImageResId)
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(productContext, ProductDetailActivity::class.java).apply {
+                putExtra("PRODUCT_NAME", product.name)
+                putExtra("PRODUCT_IMAGE", product.imageResId)
+                putExtra("PRODUCT_PRICE", product.price)
+                putExtra("POSTED_BY_IMAGE", product.postedByImageResId)
+            }
+            productContext.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {
