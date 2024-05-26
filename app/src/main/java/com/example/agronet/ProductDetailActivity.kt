@@ -1,5 +1,6 @@
 package com.example.agronet
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -76,6 +77,9 @@ class ProductDetailActivity : AppCompatActivity() {
             val cartItem = CartItem(productName, productImage, quantity, totalPrice)
             CartManager.addItem(cartItem)
             Toast.makeText(this, "$productName added to cart", Toast.LENGTH_SHORT).show()
+            // Μετάβαση στην `CartActivity`
+            val intent = Intent(this, CartActivity::class.java)
+            startActivity(intent)
         } else {
             Toast.makeText(this, "Please enter a valid quantity", Toast.LENGTH_SHORT).show()
         }
