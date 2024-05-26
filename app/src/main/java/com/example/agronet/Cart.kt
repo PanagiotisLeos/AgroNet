@@ -5,7 +5,7 @@ import android.content.Context
 class Cart(context: Context) {
 
     private val products = mutableListOf<Product>()
-    private val dbManager = DatabaseManager
+    private val dbManager = DatabaseManager()
 
     fun addProduct(product: Product) {
         products.add(product)
