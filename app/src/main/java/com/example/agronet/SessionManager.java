@@ -5,14 +5,16 @@ import android.content.SharedPreferences;
 import com.example.agronet.DatabaseManager;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
 public class SessionManager {
-    private static final String PREF_NAME = "AppSession";
-    private static final String IS_LOGIN = "IsLoggedIn";
-    private static final String KEY_USER_ID = "UserId";
-    private static final String KEY_USER_TYPE = "UserType";
+    public static final String PREF_NAME = "AppSession";
+    public static final String IS_LOGIN = "IsLoggedIn";
+    public static final String KEY_USER_ID = "UserId";
+    public static final String KEY_USER_TYPE = "UserType";
 
     SharedPreferences pref;
     static SharedPreferences.Editor editor;
@@ -22,16 +24,15 @@ public class SessionManager {
 
     public SessionManager(Context context) {
         this._context = context;
-        pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+        pref = _context.getSharedPreferences(PREF_NAME,   PRIVATE_MODE);
         editor = pref.edit();
     }
 
-    public static void createLoginSession(String userId, String userType) {
+    public void createLoginSession(String userId, String userType) {
         editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_USER_ID, userId);
         editor.putString(KEY_USER_TYPE, userType);
         editor.commit();
-
     }
 
 
@@ -51,7 +52,7 @@ public class SessionManager {
         return KEY_USER_ID;
     }
 
-    public String getUseType() {
+    public String getUserType() {
         return KEY_USER_TYPE;
     }
 
@@ -60,4 +61,35 @@ public class SessionManager {
         editor.commit();
     }
 
+    public User fetchUserDetails(String userId, String userType) throws SQLException {
+        Connection conn = DatabaseManager.getConnection();
+        String query = userType.equals("0") ?
+                "SELECT * FROM customer WHERE customer_id = ?" :
+                "SELECT * FROM farmer WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                if ("0".equals(userType)) {
+                    return new Customer(
+                            rs.getInt("customer_id"),
+                            rs.getString("first_name"),
+                            rs.getString("last_name")
+                    );
+                } else if ("1".equals(userType)) {
+                    return new Farmer(
+                            rs.getInt("id"),
+                            rs.getString("first_name"),
+                            rs.getString("last_name"),
+                            rs.getString("location"),
+                            rs.getBytes("prof_image"),
+                            rs.getString("farmer_type"),
+                            rs.getString("description")
+
+                    );
+                }
+            }
+        }
+        return null;
+    }
 }

@@ -7,12 +7,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.nio.charset.CharsetDecoder
 import java.sql.Connection
 import java.sql.SQLException
 
@@ -33,6 +33,7 @@ class FarmerDetailsFragment : Fragment() {
     private lateinit var name: TextView
     private lateinit var description: TextView
     private lateinit var location: TextView
+    private lateinit var favoriteButton: ImageButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +50,11 @@ class FarmerDetailsFragment : Fragment() {
         if (farmerId == null) return view
         fetchFarmerProfile(farmerId)
 
+        favoriteButton = view.findViewById(R.id.starButton)
+        favoriteButton.setOnClickListener {
+            toggleFavoriteStatus()
+        }
+
         return view
     }
 
@@ -62,7 +68,8 @@ class FarmerDetailsFragment : Fragment() {
                 val preparedStatement = connection.prepareStatement(query)
                 preparedStatement.setInt(1, farmerId)
 
-                val resultSet = preparedStatement.executeQuery("SELECT * FROM farmer where id = $farmerId")
+                val resultSet =
+                    preparedStatement.executeQuery("SELECT * FROM farmer where id = $farmerId")
                 if (resultSet.next()) {
                     val fname = resultSet.getString("first_name")
                     val lname = resultSet.getString("last_name")
@@ -75,17 +82,49 @@ class FarmerDetailsFragment : Fragment() {
                     }
                 }
                 preparedStatement.close()
-            }
-            catch (e: SQLException) {
+            } catch (e: SQLException) {
                 Log.e("FarmerDetailsFragment", "SQL Exception: ${e.message}", e)
                 launch(Dispatchers.Main) {
                     name.text = "Error loading data"
                 }
-          }
-            finally {
+            } finally {
                 connection?.close()
             }
         }
 
     }
+
+    private fun toggleFavoriteStatus() {
+        val userId = 1;
+        val farmerId = 1;
+        addFavorite(userId, farmerId)
+    }
+
+    private fun addFavorite(userId: Int, farmerId: Int) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            var connection: Connection? = null
+            try {
+                connection = DatabaseManager.getConnection()
+                val query = "INSERT INTO favorites (customer_id, farmer_id, created_at) VALUES (?, ?, NOW())"
+                val preparedStatement = connection.prepareStatement(query)
+                preparedStatement.setInt(1, userId)
+                preparedStatement.setInt(2, farmerId)
+                preparedStatement.executeUpdate()
+                preparedStatement.close()
+
+                launch(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show()
+                    favoriteButton.setImageResource(R.drawable.fb) // Change to filled star icon
+                }
+            } catch (e: SQLException) {
+                Log.e("FarmerDetailsFragment", "SQL Exception: ${e.message}", e)
+                launch(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Failed to add to favorites", Toast.LENGTH_SHORT).show()
+                }
+            } finally {
+                connection?.close()
+            }
+        }
+    }
+
 }

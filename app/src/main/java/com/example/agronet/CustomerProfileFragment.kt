@@ -36,7 +36,7 @@ class CustomerProfileFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun loadUserProfile() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val customer = DatabaseManager.fetchUserDetails(sessionManager.userId, sessionManager.useType)
+            val customer = sessionManager.fetchUserDetails(sessionManager.userId, sessionManager.userType)
             withContext(Dispatchers.Main) {
                 if (customer == null) {
                     Log.e("CustomerProfileFragment", "No Customer Data Found")
