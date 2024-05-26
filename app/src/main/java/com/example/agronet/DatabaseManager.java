@@ -34,39 +34,7 @@ public class    DatabaseManager {
     }
 
 
-    public static User fetchUserDetails(String userId, String userType) throws SQLException {
-        Connection conn = getConnection();
-        String query = userType.equals("0") ?
-                "SELECT * FROM customer WHERE customer_id = ?" :
-                "SELECT * FROM farmer WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, userId);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                if ("0".equals(userType)) {
-                    return new Customer(
-                            rs.getInt("customer_id"),
-                            rs.getString("first_name"),
-                            rs.getString("last_name")
-                    );
-                } else if ("1".equals(userType)) {
-                    return new Farmer(
-                            rs.getInt("id"),
-                            rs.getString("first_name"),
-                            rs.getString("last_name"),
-                            rs.getString("location"),
-                            rs.getBytes("prof_image"),
-                            rs.getString("farmer_type"),
-                            rs.getString("description")
-
-                    );
-                }
-            }
-        }
-        return null;
-    }
-
-    public static List<Product> getAllProducts() {
+    public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -82,7 +50,7 @@ public class    DatabaseManager {
                 Product product = new Product(
                         resultSet.getInt("id"),
                         resultSet.getString("name"),
-                        resultSet.getDouble("price"),
+                        resultSet.getString("price"),
                         resultSet.getInt("imageResId"),
                         resultSet.getInt("postedByImageResId")
                 );

@@ -1,6 +1,7 @@
 package com.example.agronet
 
 import android.content.Context
+import androidx.core.text.trimmedLength
 
 class Cart(context: Context) {
 
@@ -20,7 +21,7 @@ class Cart(context: Context) {
     }
 
     fun getTotalPrice(): Double {
-        return products.sumOf { it.price }
+        return products.sumOf { it.price.substring(6).toDouble() }
     }
 
     fun clearCart() {
