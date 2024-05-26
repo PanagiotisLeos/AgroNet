@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DatabaseManager {
-    private static final String URL = "jdbc:mariadb://192.168.88.15/agronetdb";
+    private static final String URL = "jdbc:mariadb://192.168.88.238/agronetdb";
     private static final String USER = "root";
     private static final String PASSWORD = "";
     private static Connection connection;
