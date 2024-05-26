@@ -6,7 +6,9 @@ import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 
 class ProductDetailActivity : AppCompatActivity() {
 
@@ -16,6 +18,7 @@ class ProductDetailActivity : AppCompatActivity() {
     private lateinit var farmerImageView: ImageView
     private lateinit var quantityInput: EditText
     private lateinit var totalPriceLabel: TextView
+    private lateinit var addToCartButton: AppCompatButton
 
     private var productPricePerKg: Double = 0.0
 
@@ -29,6 +32,7 @@ class ProductDetailActivity : AppCompatActivity() {
         farmerImageView = findViewById(R.id.farmerImage)
         quantityInput = findViewById(R.id.quantityInput)
         totalPriceLabel = findViewById(R.id.totalPriceLabel)
+        addToCartButton = findViewById(R.id.addToCartButton)
 
         val productName = intent.getStringExtra("PRODUCT_NAME")
         val productImage = intent.getIntExtra("PRODUCT_IMAGE", 0)
@@ -50,11 +54,30 @@ class ProductDetailActivity : AppCompatActivity() {
                 calculateTotalPrice()
             }
         })
+
+        addToCartButton.setOnClickListener {
+            addToCart()
+        }
     }
 
     private fun calculateTotalPrice() {
         val quantity = quantityInput.text.toString().toDoubleOrNull() ?: 0.0
         val totalPrice = quantity * productPricePerKg
         totalPriceLabel.text = String.format("Total Price: €%.2f", totalPrice)
+    }
+
+    private fun addToCart() {
+        val productName = productNameTextView.text.toString()
+        val productImage = intent.getIntExtra("PRODUCT_IMAGE", 0)
+        val quantity = quantityInput.text.toString().toDoubleOrNull() ?: 0.0
+        val totalPrice = quantity * productPricePerKg
+
+        if (quantity > 0) {
+            val cartItem = CartItem(productName, productImage, quantity, totalPrice)
+            CartManager.addItem(cartItem)
+            Toast.makeText(this, "$productName added to cart", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Please enter a valid quantity", Toast.LENGTH_SHORT).show()
+        }
     }
 }
