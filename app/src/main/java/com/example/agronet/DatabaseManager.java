@@ -15,7 +15,7 @@ import java.util.List;
 
 
 public class    DatabaseManager {
-    private static final String URL = "jdbc:mariadb://192.168.2.102:3306/agronetdb";
+    private static final String URL = "jdbc:mariadb://192.168.2.7:3306/agronetdb";
     private static final String USER = "root";
     private static final String PASSWORD = "";
     private static Connection connection;
@@ -88,23 +88,11 @@ public class    DatabaseManager {
                         rs.getInt("customer_id"),
                         rs.getString("first_name"),
                         rs.getString("last_name"),
-                        rs.getInt("telephone")
+                        rs.getString("telephone")
                 );
             }
         }
         return null;
-    }
-
-    public static void updateCustomerInfo(Customer customer) throws SQLException {
-        Connection conn = getConnection();
-        String query = "UPDATE customer SET first_name = ?, last_name = ?, email = ? WHERE customer_id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, customer.getfName());
-            stmt.setString(2, customer.getlName());
-            stmt.setInt(3, customer.getphone());
-            stmt.setInt(4, customer.getUserId());
-            stmt.executeQuery();
-        }
     }
 }
 

@@ -75,7 +75,7 @@ public class SessionManager {
                             rs.getInt("customer_id"),
                             rs.getString("first_name"),
                             rs.getString("last_name"),
-                            rs.getInt("phone")
+                            rs.getString("phone")
 
                     );
                 } else if ("1".equals(userType)) {

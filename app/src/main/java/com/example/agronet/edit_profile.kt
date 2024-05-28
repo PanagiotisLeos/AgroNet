@@ -49,38 +49,51 @@ class EditProfileFragment : Fragment() {
 
             editTextFirstName.setText(customer.fname)
             editTextLastName.setText(customer.lname)
-            editTextPhone.setText(customer.email)
+            editTextPhone.setText(customer.phone)
         }
     }
 
     private fun saveUserProfile() {
         val firstName = editTextFirstName.text.toString()
         val lastName = editTextLastName.text.toString()
-        val email = editTextPhone.text.toString()
+        val phone = editTextPhone.text.toString()
 
-        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
-            Toast.makeText(requireContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show()
+        if (firstName.isEmpty() || lastName.isEmpty()) {
+            Toast.makeText(requireContext(), "Please fill out all fields", Toast.LENGTH_SHORT)
+                .show()
             return
         }
 
-        val customer = DatabaseManager.fetchCustomerInfo(sessionManager.userId)
-        customer?.let {
-            it.fname = firstName
-            it.lname = lastName
-            it.email = email
-
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    DatabaseManager.updateCustomerInfo(it)
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val customer = DatabaseManager.fetchCustomerInfo(sessionManager.userId)
+                if (customer != null) {
+                    customer.fname = firstName
+                    customer.lname = lastName
+                    customer.phone = phone
+                    customer.updateCustomerInfo(customer)
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(requireContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Profile updated successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         requireActivity().onBackPressed() // Navigate back to the previous fragment
                     }
-                } catch (e: SQLException) {
-                    e.printStackTrace()
+                } else {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(requireContext(), "Failed to update profile", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Failed to retrieve customer information",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
+                }
+            } catch (e: SQLException) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Failed to update profile", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
