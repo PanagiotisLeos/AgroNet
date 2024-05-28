@@ -1,6 +1,7 @@
 package com.example.agronet
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,6 +22,8 @@ class CustomerProfileFragment : Fragment() {
 
     private lateinit var sessionManager: SessionManager
     private lateinit var name: TextView
+    private lateinit var logout: Button
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +32,7 @@ class CustomerProfileFragment : Fragment() {
         val view = inflater.inflate(R.layout.customer_profile, container, false)
         sessionManager = SessionManager(requireContext())
         name = view.findViewById(R.id.consumerName)
+        logout = view.findViewById(R.id.logout)
         val editProfBtn = view.findViewById<Button>(R.id.editProfile)
 
 
@@ -40,6 +44,11 @@ class CustomerProfileFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+
+        logout.setOnClickListener {
+            logoutUser()
+        }
+
         return view
     }
 
@@ -57,6 +66,16 @@ class CustomerProfileFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun logoutUser() {
+        sessionManager.logoutUser()
+
+        // Redirect to the login activity
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        requireActivity().finish()
     }
 }
 

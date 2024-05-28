@@ -1,13 +1,19 @@
 package com.example.agronet;
 
+import static com.example.agronet.DatabaseManager.getConnection;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 public class Customer extends User{
     int userId;
     String fname;
     String lname;
-    int phone;
+    String  phone;
 
 
-    public Customer(int userId, String fname, String lname, int phone) {
+    public Customer(int userId, String fname, String lname, String phone) {
         this.userId = userId;
         this.fname = fname;
         this.lname = lname;
@@ -33,18 +39,18 @@ public class Customer extends User{
     }
 
     public String getlName() {
-        return fname;
+        return lname;
     }
 
-    public void setlame(String lname) {
+    public void setlName(String lname) {
         this.lname = lname;
     }
 
-    public int getphone() {
+    public String getphone() {
         return phone;
     }
 
-    public void setphone(int phone) {
+    public void setphone(String  phone) {
         this.phone = phone;
     }
 
@@ -66,6 +72,18 @@ public class Customer extends User{
             System.out.println(this.fname + " " + this.lname + " removed a star from " + farmer.getName());
         } else {
             System.out.println("com.example.agronet.Star not found for " + farmer.getName());
+        }
+    }
+
+    public void updateCustomerInfo(Customer customer) throws SQLException {
+        Connection conn = getConnection();
+        String query = "UPDATE customer SET first_name = ?, last_name = ?, telephone = ? WHERE customer_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, customer.getfName());
+            stmt.setString(2, customer.getlName());
+            stmt.setString(3, customer.getphone());
+            stmt.setInt(4, customer.getUserId());
+            stmt.executeUpdate();
         }
     }
 }

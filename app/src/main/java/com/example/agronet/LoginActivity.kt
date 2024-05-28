@@ -68,7 +68,7 @@ class LoginActivity : AppCompatActivity() {
             if (isValidUser) {
                 when (userType) {
                     0 -> {
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java) // Replace with CustomerActivity if needed
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
                         startActivity(intent)
                         finish()
                     }
