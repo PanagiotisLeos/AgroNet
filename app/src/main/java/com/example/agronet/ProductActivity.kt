@@ -31,5 +31,5 @@ class ProductActivity : AppCompatActivity() {
 
         productAdapter = ProductAdapter(this, productList)
         productRecyclerView.adapter = productAdapter
+
     }
-}

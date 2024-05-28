@@ -48,14 +48,14 @@ class ProductPageFragment : Fragment() {
 
     private fun setupRecyclerViews() {
         val products = listOf(
-            Product(
+            Product(1,
                 "Bananas Voiviotas",
                 "0.99€ / per kg",
                 R.drawable.bananas,
                 R.drawable.farmer_photo
             ),
-            Product("Apples", "1.50€ / per kg", R.drawable.bananas, R.drawable.farmer_photo),
-            Product("Oranges", "1.20€ / per kg", R.drawable.bananas, R.drawable.farmer_photo)
+            Product(1,"Apples", "1.50€ / per kg", R.drawable.bananas, R.drawable.farmer_photo),
+            Product(1,"Oranges", "1.20€ / per kg", R.drawable.bananas, R.drawable.farmer_photo)
         )
 
         topSellingRecyclerView.layoutManager =

@@ -3,6 +3,9 @@ package com.example.agronet;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Farmer extends User implements Parcelable {
 
     int id;
@@ -12,6 +15,8 @@ public class Farmer extends User implements Parcelable {
      byte[] profile_img;
      String farmerType;
      String description;
+    private List<Star> stars;
+
 
     protected Farmer(Parcel in) {
         id = in.readInt();
@@ -60,6 +65,7 @@ public class Farmer extends User implements Parcelable {
         this.profile_img = profile_img;
         this.farmerType = farmerType;
         this.description = description;
+        this.stars = new ArrayList<>();
     }
 
     // Getters and setters for each field
@@ -79,7 +85,7 @@ public class Farmer extends User implements Parcelable {
         this.location = location;
     }
 
-    public int getId() {
+    public int getFarmerId() {
         return id;
     }
 
@@ -110,4 +116,11 @@ public class Farmer extends User implements Parcelable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public List<Star> getStars() {
+        return stars;
+    }
+
+
+
 }

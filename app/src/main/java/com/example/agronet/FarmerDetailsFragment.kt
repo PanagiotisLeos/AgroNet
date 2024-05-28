@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,6 +38,7 @@ class FarmerDetailsFragment : Fragment() {
     private lateinit var name: TextView
     private lateinit var description: TextView
     private lateinit var location: TextView
+    private lateinit var starButton: ImageButton
 
 
 
@@ -44,7 +46,7 @@ class FarmerDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.farmer_profile_from_user, container, false)
+        val view = inflater.inflate(R.layout.farmer_details, container, false)
 
         name = view.findViewById(R.id.farmerName)
         description = view.findViewById(R.id.farmerDescription)
@@ -60,6 +62,7 @@ class FarmerDetailsFragment : Fragment() {
         if (farmerId == null) return view
         fetchFarmerProfile(farmerId)
 
+
         return view
     }
 
@@ -73,7 +76,8 @@ class FarmerDetailsFragment : Fragment() {
                 val preparedStatement = connection.prepareStatement(query)
                 preparedStatement.setInt(1, farmerId)
 
-                val resultSet = preparedStatement.executeQuery("SELECT * FROM farmer where id = $farmerId")
+                val resultSet =
+                    preparedStatement.executeQuery("SELECT * FROM farmer where id = $farmerId")
                 if (resultSet.next()) {
                     val fname = resultSet.getString("first_name")
                     val lname = resultSet.getString("last_name")
@@ -86,17 +90,44 @@ class FarmerDetailsFragment : Fragment() {
                     }
                 }
                 preparedStatement.close()
-            }
-            catch (e: SQLException) {
+            } catch (e: SQLException) {
                 Log.e("FarmerDetailsFragment", "SQL Exception: ${e.message}", e)
                 launch(Dispatchers.Main) {
                     name.text = "Error loading data"
                 }
-          }
-            finally {
+            } finally {
                 connection?.close()
             }
         }
 
     }
+
+
+    private fun addstar(userId: Int, farmerId: Int) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            var connection: Connection? = null
+            try {
+                connection = DatabaseManager.getConnection()
+                val query = "INSERT INTO stars (customer_id, farmer_id, created_at) VALUES (?, ?, NOW())"
+                val preparedStatement = connection.prepareStatement(query)
+                preparedStatement.setInt(1, userId)
+                preparedStatement.setInt(2, farmerId)
+                preparedStatement.executeUpdate()
+                preparedStatement.close()
+
+                launch(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Added to stars", Toast.LENGTH_SHORT).show()
+                    starButton.setImageResource(R.drawable.fb) // Change to filled star icon
+                }
+            } catch (e: SQLException) {
+                Log.e("FarmerDetailsFragment", "SQL Exception: ${e.message}", e)
+                launch(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Failed to add to favorites", Toast.LENGTH_SHORT).show()
+                }
+            } finally {
+                connection?.close()
+            }
+        }
+    }
+
 }
