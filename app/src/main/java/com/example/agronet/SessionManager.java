@@ -49,7 +49,7 @@ public class SessionManager {
     }
 
     public String getUserId() {
-        return KEY_USER_ID;
+        return pref.getString(KEY_USER_ID,null);
     }
 
     public String getUserType() {

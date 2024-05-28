@@ -1,14 +1,15 @@
 package com.example.agronet
 
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,9 @@ import kotlinx.coroutines.launch
 import java.sql.Connection
 import java.sql.SQLException
 
+
 class FarmerDetailsFragment : Fragment() {
+
 
     companion object {
         private const val ARG_FARMER_ID = "farmerId"
@@ -30,10 +33,14 @@ class FarmerDetailsFragment : Fragment() {
         }
     }
 
+    private lateinit var sessionManager: SessionManager
+
     private lateinit var name: TextView
     private lateinit var description: TextView
     private lateinit var location: TextView
     private lateinit var starButton: ImageButton
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +51,11 @@ class FarmerDetailsFragment : Fragment() {
         name = view.findViewById(R.id.farmerName)
         description = view.findViewById(R.id.farmerDescription)
         location = view.findViewById(R.id.farmerLocation)
+
+        sessionManager = SessionManager(requireContext())
+        //val userId = sessionManager.userId
+        //location.text = userId;
+
 
         val farmerId = arguments?.getInt(ARG_FARMER_ID)
         Log.d("FarmerDetailsFragment", "Farmer ID: $farmerId")

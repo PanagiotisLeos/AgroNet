@@ -47,8 +47,9 @@
             android:name=".LoginActivity"
             android:exported="true">
         </activity>
+        <activity android:name=".ProductDetailActivity" />
 
-      
+
         <activity android:name=".RegisterActivity" />
         <activity android:name=".FarmerProfileActivity" />
         <activity android:name=".AddProductActivity" />

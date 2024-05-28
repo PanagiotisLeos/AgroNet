@@ -77,17 +77,6 @@
                 android:text="Heraklion, Crete"
                 android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/consumerDescription"
-                style="@style/Black_textStyle.Style"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:gravity="center_horizontal"
-                android:paddingTop="8dp"
-                android:text="Hello, I'm Maria Papadopoulou, a passionate advocate for locally-sourced, organic food. I love supporting local farmers and enjoy cooking with the freshest ingredients available. My favorite products are the ones that come straight from the farms of Crete."
-                android:textSize="14sp" />
-
         </LinearLayout>
 
         <!-- New LinearLayout for the star and phone buttons -->
@@ -264,65 +253,7 @@
         </LinearLayout>
 
         <!-- Products RecyclerView -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Recommended Products"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:paddingTop="16dp"
-            android:paddingBottom="8dp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/productRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:nestedScrollingEnabled="false"
-            app:spanCount="2"
-            tools:listitem="@layout/item_product" />
-
-        <!-- Footer -->
-        <LinearLayout
-            android:id="@+id/footer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFA726"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginTop="16dp">
-
-            <TextView
-                android:id="@+id/navigationProducts"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Products"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/navigationMyOrders"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="My Orders"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/navigationConsumers"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Consumers"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-        </LinearLayout>
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

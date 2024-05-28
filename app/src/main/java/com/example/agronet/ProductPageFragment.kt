@@ -85,13 +85,11 @@ class ProductPageFragment : Fragment() {
 
         setupCategoryClickListeners(popupView, popupWindow)
 
-
         try {
             popupWindow.showAsDropDown(anchorView)
         } catch (e: Exception) {
             e.printStackTrace()  // This will print the full stack trace, including the specific exception
         }
-
     }
 
     private fun setupCategoryClickListeners(view: View, popupWindow: PopupWindow) {
@@ -153,6 +151,4 @@ class ProductPageFragment : Fragment() {
         super.onPause()
         popupWindow?.dismiss()  // Dismiss the popup to prevent leakage
     }
-
-
 }
