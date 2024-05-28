@@ -9,10 +9,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DatabaseManager {
-    private static final String URL = "jdbc:mariadb://192.168.88.238/agronetdb";
+    private static final String URL = "jdbc:mariadb://192.168.2.7/agronetdb";
     private static final String USER = "root";
     private static final String PASSWORD = "";
     private static Connection connection;
+
 
 
     public static synchronized Connection getConnection() throws SQLException {
@@ -42,7 +43,8 @@ public class DatabaseManager {
                     return new Customer(
                             rs.getInt("customer_id"),
                             rs.getString("first_name"),
-                            rs.getString("last_name")
+                            rs.getString("last_name"),
+                            rs.getString("telephone")
                     );
                 } else if ("1".equals(userType)) {
                     return new Farmer(
@@ -56,6 +58,24 @@ public class DatabaseManager {
 
                     );
                 }
+            }
+        }
+        return null;
+    }
+
+    public static Customer fetchCustomerDetails(String userId) throws SQLException {
+        Connection conn = getConnection();
+        String query = "SELECT * FROM customer WHERE customer_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Customer(
+                        rs.getInt("customer_id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("telephone")
+                );
             }
         }
         return null;

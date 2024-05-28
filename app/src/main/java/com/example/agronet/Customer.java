@@ -4,13 +4,14 @@ public class Customer extends User{
     int userId;
     String fname;
     String lname;
-    String email;
+    String phone;
 
 
-    public Customer(int userId, String fname, String lname) {
+    public Customer(int userId, String fname, String lname, String phone) {
         this.userId = userId;
         this.fname = fname;
         this.lname = lname;
+        this.phone = phone;
     }
 
     // Getters and Setters
@@ -39,11 +40,11 @@ public class Customer extends User{
         this.lname = lname;
     }
 
-    public String getEmail() {
-        return email;
+    public String getphone() {
+        return phone;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setphone(String phone) {
+        this.phone = phone;
     }
 }
