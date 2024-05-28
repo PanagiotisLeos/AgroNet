@@ -21,7 +21,6 @@ public class    DatabaseManager {
     private static Connection connection;
 
 
-
     public static synchronized Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             try {
@@ -34,35 +33,6 @@ public class    DatabaseManager {
         }
         return connection;
     }
-
-
-    public static User fetchUserDetails(String userId, String userType) throws SQLException {
-        Connection conn = getConnection();
-        String query = userType.equals("0") ?
-                "SELECT * FROM customer WHERE customer_id = ?" :
-                "SELECT * FROM farmer WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, userId);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                if ("0".equals(userType)) {
-                    return new Customer(
-                            rs.getInt("customer_id"),
-                            rs.getString("first_name"),
-                            rs.getString("last_name"),
-                            rs.getInt("phone")
-                    );
-                } else if ("1".equals(userType)) {
-                    return new Farmer(
-                            rs.getInt("id"),
-                            rs.getString("first_name"),
-                            rs.getString("last_name"),
-                            rs.getString("location"),
-                            rs.getBytes("prof_image"),
-                            rs.getString("farmer_type"),
-                            rs.getString("description")
-
-                    );
 
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
@@ -136,8 +106,9 @@ public class    DatabaseManager {
             stmt.executeQuery();
         }
     }
-
 }
+
+
 
 
 

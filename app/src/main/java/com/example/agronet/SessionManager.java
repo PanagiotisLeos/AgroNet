@@ -74,7 +74,9 @@ public class SessionManager {
                     return new Customer(
                             rs.getInt("customer_id"),
                             rs.getString("first_name"),
-                            rs.getString("last_name")
+                            rs.getString("last_name"),
+                            rs.getInt("phone")
+
                     );
                 } else if ("1".equals(userType)) {
                     return new Farmer(

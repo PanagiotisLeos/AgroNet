@@ -23,13 +23,14 @@ class ProductActivity : AppCompatActivity() {
 
         // Προσθήκη προϊόντων στη λίστα
         productList = listOf(
-            Product("Bananas Voivitias", "1.48€ / per kg", R.drawable.bananas, R.drawable.farmer_photo),
-            Product("Apples", "2.30€ / per kg", R.drawable.bananas, R.drawable.farmer_photo),
-            Product("Oranges", "1.20€ / per kg", R.drawable.bananas, R.drawable.farmer_photo),
-            Product("Grapes", "3.00€ / per kg", R.drawable.bananas, R.drawable.farmer_photo)
+            Product(1,"Bananas Voivitias", "1.48€ / per kg", R.drawable.bananas, R.drawable.farmer_photo),
+            Product(2,"Apples", "2.30€ / per kg", R.drawable.bananas, R.drawable.farmer_photo),
+            Product(3,"Oranges", "1.20€ / per kg", R.drawable.bananas, R.drawable.farmer_photo),
+            Product(4,"Grapes", "3.00€ / per kg", R.drawable.bananas, R.drawable.farmer_photo)
         )
 
         productAdapter = ProductAdapter(this, productList)
         productRecyclerView.adapter = productAdapter
 
+    }
     }
