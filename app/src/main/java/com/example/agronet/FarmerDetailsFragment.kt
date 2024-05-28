@@ -33,13 +33,13 @@ class FarmerDetailsFragment : Fragment() {
     private lateinit var name: TextView
     private lateinit var description: TextView
     private lateinit var location: TextView
-    private lateinit var favoriteButton: ImageButton
+    private lateinit var starButton: ImageButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.farmer_profile_from_user, container, false)
+        val view = inflater.inflate(R.layout.farmer_details, container, false)
 
         name = view.findViewById(R.id.farmerName)
         description = view.findViewById(R.id.farmerDescription)
@@ -50,10 +50,6 @@ class FarmerDetailsFragment : Fragment() {
         if (farmerId == null) return view
         fetchFarmerProfile(farmerId)
 
-        favoriteButton = view.findViewById(R.id.starButton)
-        favoriteButton.setOnClickListener {
-            toggleFavoriteStatus()
-        }
 
         return view
     }
@@ -94,18 +90,13 @@ class FarmerDetailsFragment : Fragment() {
 
     }
 
-    private fun toggleFavoriteStatus() {
-        val userId = 1;
-        val farmerId = 1;
-        addFavorite(userId, farmerId)
-    }
 
-    private fun addFavorite(userId: Int, farmerId: Int) {
+    private fun addstar(userId: Int, farmerId: Int) {
         lifecycleScope.launch(Dispatchers.IO) {
             var connection: Connection? = null
             try {
                 connection = DatabaseManager.getConnection()
-                val query = "INSERT INTO favorites (customer_id, farmer_id, created_at) VALUES (?, ?, NOW())"
+                val query = "INSERT INTO stars (customer_id, farmer_id, created_at) VALUES (?, ?, NOW())"
                 val preparedStatement = connection.prepareStatement(query)
                 preparedStatement.setInt(1, userId)
                 preparedStatement.setInt(2, farmerId)
@@ -113,8 +104,8 @@ class FarmerDetailsFragment : Fragment() {
                 preparedStatement.close()
 
                 launch(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show()
-                    favoriteButton.setImageResource(R.drawable.fb) // Change to filled star icon
+                    Toast.makeText(requireContext(), "Added to stars", Toast.LENGTH_SHORT).show()
+                    starButton.setImageResource(R.drawable.fb) // Change to filled star icon
                 }
             } catch (e: SQLException) {
                 Log.e("FarmerDetailsFragment", "SQL Exception: ${e.message}", e)
