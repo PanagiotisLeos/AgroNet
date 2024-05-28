@@ -15,7 +15,7 @@ import java.util.List;
 
 
 public class    DatabaseManager {
-    private static final String URL = "jdbc:mariadb://192.168.2.7:3306/agronetdb";
+    private static final String URL = "jdbc:mariadb://192.168.2.102:3306/agronetdb";
     private static final String USER = "root";
     private static final String PASSWORD = "";
     private static Connection connection;

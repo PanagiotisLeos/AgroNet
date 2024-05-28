@@ -22,6 +22,8 @@ class ProductDetailActivity : AppCompatActivity() {
     private lateinit var addToCartButton: AppCompatButton
 
     private var productPricePerKg: Double = 0.0
+    private var isEditing = false
+    private var cartItem: CartItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +58,13 @@ class ProductDetailActivity : AppCompatActivity() {
             }
         })
 
+        isEditing = intent.getBooleanExtra("IS_EDITING", false)
+        if (isEditing) {
+            val quantity = intent.getDoubleExtra("QUANTITY", 0.0)
+            quantityInput.setText(quantity.toString())
+            cartItem = CartItem(productName ?: "", productImage, quantity, quantity * productPricePerKg)
+        }
+
         addToCartButton.setOnClickListener {
             addToCart()
         }
@@ -74,11 +83,14 @@ class ProductDetailActivity : AppCompatActivity() {
         val totalPrice = quantity * productPricePerKg
 
         if (quantity > 0) {
+            if (isEditing && cartItem != null) {
+                CartManager.removeItem(cartItem!!)
+            }
             val cartItem = CartItem(productName, productImage, quantity, totalPrice)
             CartManager.addItem(cartItem)
             Toast.makeText(this, "$productName added to cart", Toast.LENGTH_SHORT).show()
-            // Μετάβαση στην `CartActivity`
-            val intent = Intent(this, CartActivity::class.java)
+            // Επιστροφή στην `MainActivity` και `ProductPageFragment`
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         } else {
             Toast.makeText(this, "Please enter a valid quantity", Toast.LENGTH_SHORT).show()
