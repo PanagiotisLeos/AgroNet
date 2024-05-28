@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -28,15 +29,24 @@ class CustomerProfileFragment : Fragment() {
         val view = inflater.inflate(R.layout.customer_profile, container, false)
         sessionManager = SessionManager(requireContext())
         name = view.findViewById(R.id.consumerName)
+        val editProfBtn = view.findViewById<Button>(R.id.editProfile)
+
 
         loadUserProfile()
+
+        editProfBtn.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, EditProfileFragment())
+                .addToBackStack(null)
+                .commit()
+        }
         return view
     }
 
     @SuppressLint("SetTextI18n")
     private fun loadUserProfile() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val customer = DatabaseManager.fetchCustomerDetails(sessionManager.userId)
+            val customer = DatabaseManager.fetchCustomerInfo(sessionManager.userId)
             withContext(Dispatchers.Main) {
                 if (customer == null) {
                     Log.e("CustomerProfileFragment", "No Customer Data Found")

@@ -44,7 +44,7 @@ public class DatabaseManager {
                             rs.getInt("customer_id"),
                             rs.getString("first_name"),
                             rs.getString("last_name"),
-                            rs.getString("telephone")
+                            rs.getInt("phone")
                     );
                 } else if ("1".equals(userType)) {
                     return new Farmer(
@@ -63,7 +63,7 @@ public class DatabaseManager {
         return null;
     }
 
-    public static Customer fetchCustomerDetails(String userId) throws SQLException {
+    public static Customer fetchCustomerInfo(String userId) throws SQLException {
         Connection conn = getConnection();
         String query = "SELECT * FROM customer WHERE customer_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -74,11 +74,23 @@ public class DatabaseManager {
                         rs.getInt("customer_id"),
                         rs.getString("first_name"),
                         rs.getString("last_name"),
-                        rs.getString("telephone")
+                        rs.getInt("telephone")
                 );
             }
         }
         return null;
+    }
+
+    public static void updateCustomerInfo(Customer customer) throws SQLException {
+        Connection conn = getConnection();
+        String query = "UPDATE customer SET first_name = ?, last_name = ?, email = ? WHERE customer_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, customer.getfName());
+            stmt.setString(2, customer.getlName());
+            stmt.setInt(3, customer.getphone());
+            stmt.setInt(4, customer.getUserId());
+            stmt.executeQuery();
+        }
     }
 }
 

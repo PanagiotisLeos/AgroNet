@@ -4,10 +4,10 @@ public class Customer extends User{
     int userId;
     String fname;
     String lname;
-    String phone;
+    int phone;
 
 
-    public Customer(int userId, String fname, String lname, String phone) {
+    public Customer(int userId, String fname, String lname, int phone) {
         this.userId = userId;
         this.fname = fname;
         this.lname = lname;
@@ -40,11 +40,11 @@ public class Customer extends User{
         this.lname = lname;
     }
 
-    public String getphone() {
+    public int getphone() {
         return phone;
     }
 
-    public void setphone(String phone) {
+    public void setphone(int phone) {
         this.phone = phone;
     }
 }
