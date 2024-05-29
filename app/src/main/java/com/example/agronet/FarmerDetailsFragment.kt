@@ -91,7 +91,7 @@ class FarmerDetailsFragment : Fragment() {
                 preparedStatement.setInt(1, farmerId)
 
                 val resultSet =
-                    preparedStatement.executeQuery("SELECT * FROM farmer inner join star on farmer.id = star.farmer_id WHERE farmer.id = $farmerId AND star.customer_id = ${sessionManager.userId}");
+                    preparedStatement.executeQuery("SELECT * FROM farmer left outer join star on farmer.id = star.farmer_id AND star.customer_id = ${sessionManager.userId} WHERE farmer.id = $farmerId ");
                 if (resultSet.next()) {
                     val fname = resultSet.getString("first_name")
                     val lname = resultSet.getString("last_name")
@@ -103,7 +103,7 @@ class FarmerDetailsFragment : Fragment() {
                         description.text = desc
                         location.text = loc
 
-                        if (star != null){
+                        if (star != 0){
                             isStarred = true
                             starButton.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_star_gold,0,0)
                         }
