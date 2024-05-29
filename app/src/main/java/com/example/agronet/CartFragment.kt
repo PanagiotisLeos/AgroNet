@@ -79,7 +79,6 @@ class CartFragment : Fragment() {
 
     private fun setupCheckoutButton() {
         checkoutButton.setOnClickListener {
-            // Πηγαίνει στη σελίδα checkout
             (activity as MainActivity).loadFragment(CheckoutFragment())
         }
     }
