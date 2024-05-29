@@ -1,5 +1,6 @@
 package com.example.agronet
 
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +10,11 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.AppCompatButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.sql.SQLException
 
 class CheckoutFragment : Fragment() {
 
@@ -70,7 +76,6 @@ class CheckoutFragment : Fragment() {
         updateTotalPrice()
     }
 
-
     private fun removeItemFromCart(item: CartItem) {
         CartManager.removeItem(item)
         cartItemsLayout.removeAllViews()
@@ -79,10 +84,10 @@ class CheckoutFragment : Fragment() {
 
     private fun editCartItem(item: CartItem) {
         val intent = Intent(context, ProductDetailActivity::class.java)
+        intent.putExtra("PRODUCT_ID", item.productId)
         intent.putExtra("PRODUCT_NAME", item.productName)
         intent.putExtra("PRODUCT_IMAGE", item.productImage)
-        intent.putExtra("PRODUCT_PRICE", "€${item.totalPrice / item.quantity}")
-        intent.putExtra("POSTED_BY_IMAGE", 0) // Προσθέστε το πραγματικό ID εικόνας αν είναι διαθέσιμο
+        intent.putExtra("PRODUCT_PRICE", item.price)
         intent.putExtra("IS_EDITING", true)
         intent.putExtra("QUANTITY", item.quantity)
         startActivity(intent)
@@ -122,9 +127,25 @@ class CheckoutFragment : Fragment() {
 
     private fun setupConfirmOrderButton() {
         confirmOrderButton.setOnClickListener {
-            Toast.makeText(context, "Order Confirmed!", Toast.LENGTH_SHORT).show()
-            CartManager.clearCart()
-            requireActivity().supportFragmentManager.popBackStack() // Close the checkout fragment
+            val customerId = 1 // Replace with the actual customer_id
+            val farmerId = 2 // Replace with the actual farmer_id
+            val orderItems = CartManager.getItems()
+
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+                    OrderManager.insertOrder(customerId, farmerId, totalAmount, orderItems)
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Order Confirmed!", Toast.LENGTH_SHORT).show()
+                        CartManager.clearCart()
+                        requireActivity().supportFragmentManager.popBackStack() // Close the checkout fragment
+                    }
+                } catch (e: SQLException) {
+                    e.printStackTrace()
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Order failed", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     }
 }
