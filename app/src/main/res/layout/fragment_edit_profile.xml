@@ -1,32 +1,94 @@
-<!-- res/layout/fragment_edit_profile.xml -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="#F0F0D0"
+    tools:context=".EditProfileFragment">
 
-    <EditText
-        android:id="@+id/editTextFirstName"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="First Name" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <EditText
-        android:id="@+id/editTextLastName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Last Name" />
+        <!-- Header with AgroNet -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
 
-    <EditText
-        android:id="@+id/editTextPhone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Phone" />
+            <TextView
+                android:id="@+id/headerText"
+                style="@style/logoStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/titan_one"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="AgroNet" />
 
-    <Button
-        android:id="@+id/buttonSave"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/user_profile"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/headerText"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="16dp" />
 
-</LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Edit Profile Fields -->
+        <EditText
+            android:id="@+id/editTextFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="First Name"
+            android:padding="12dp"
+            android:background="@drawable/edit_text_background"
+            android:layout_marginBottom="16dp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/editTextLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Last Name"
+            android:padding="12dp"
+            android:background="@drawable/edit_text_background"
+            android:layout_marginBottom="16dp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/editTextPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Phone"
+            android:padding="12dp"
+            android:background="@drawable/edit_text_background"
+            android:layout_marginBottom="24dp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:inputType="phone" />
+
+        <!-- Save Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:textColor="@android:color/white"
+            android:background="@drawable/farmers_button"
+            android:elevation="4dp"
+            android:padding="12dp" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
