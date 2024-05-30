@@ -42,7 +42,7 @@ public class    DatabaseManager {
 
         try {
             connection = getConnection();
-            String sql = "SELECT id, name, price, imageResId, postedByImageResId FROM products";
+            String sql = "SELECT id, name, price, imageResId, postedByImageResId FROM product";
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
 
@@ -51,6 +51,7 @@ public class    DatabaseManager {
                         resultSet.getInt("id"),
                         resultSet.getString("name"),
                         resultSet.getString("price"),
+                        resultSet.getInt("farmer_id"),
                         resultSet.getInt("imageResId"),
                         resultSet.getInt("postedByImageResId")
                 );

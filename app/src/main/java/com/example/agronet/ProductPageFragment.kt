@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.LinearLayout
@@ -19,12 +20,23 @@ class ProductPageFragment : Fragment() {
     private lateinit var imperfectProductsRecyclerView: RecyclerView
     private lateinit var fastShippedRecyclerView: RecyclerView
 
+    private lateinit var databaseManager: DatabaseManager
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.product_page, container, false)
+
+        val profileBtn = view.findViewById<ImageView>(R.id.profile_icon)
+
+        profileBtn.setOnClickListener{
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, FarmerProfileFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
         return view
     }
 
@@ -35,6 +47,7 @@ class ProductPageFragment : Fragment() {
         topSellingRecyclerView = view.findViewById(R.id.top_selling_recycler_view)
         imperfectProductsRecyclerView = view.findViewById(R.id.imperfect_products_recycler_view)
         fastShippedRecyclerView = view.findViewById(R.id.fast_shipped_recycler_view)
+
 
         // Setup layout managers and adapters for RecyclerViews
         setupRecyclerViews()
@@ -48,14 +61,14 @@ class ProductPageFragment : Fragment() {
 
     private fun setupRecyclerViews() {
         val products = listOf(
+            databaseManager.allProducts,
             Product(1,
                 "Bananas Voiviotas",
-                "0.99€ / per kg",
+                "0.99€ / per kg",1,
                 R.drawable.bananas,
-                R.drawable.farmer_photo
-            ),
-            Product(1,"Apples", "1.50€ / per kg", R.drawable.bananas, R.drawable.farmer_photo),
-            Product(1,"Oranges", "1.20€ / per kg", R.drawable.bananas, R.drawable.farmer_photo)
+                R.drawable.farmer_photo),
+            Product(1,"Apples", "1.50€ / per kg",1, R.drawable.bananas, R.drawable.farmer_photo),
+            Product(1,"Oranges", "1.20€ / per kg",1, R.drawable.bananas, R.drawable.farmer_photo)
         )
 
         topSellingRecyclerView.layoutManager =

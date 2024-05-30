@@ -1,9 +1,11 @@
 package com.example.agronet
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
 
 class FarmerProfileFragment : Fragment() {
@@ -13,6 +15,15 @@ class FarmerProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_farmer_profile, container, false)
+        val view = inflater.inflate(R.layout.fragment_farmer_profile, container, false)
+
+        // Now find the button in the inflated view
+        val uploadProductBtn = view.findViewById<Button>(R.id.addProduct)
+        uploadProductBtn.setOnClickListener {
+            val intent = Intent(activity, AddProductActivity::class.java)
+            startActivity(intent)
+        }
+
+        return view
     }
 }
