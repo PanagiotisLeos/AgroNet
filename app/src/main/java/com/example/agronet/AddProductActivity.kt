@@ -2,6 +2,9 @@ package com.example.agronet
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -15,8 +18,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 import java.sql.Connection
-import java.sql.DriverManager
 import java.sql.PreparedStatement
 
 class AddProductActivity : AppCompatActivity() {
@@ -48,15 +51,16 @@ class AddProductActivity : AppCompatActivity() {
             val productName = productNameInput.text.toString()
             val productPrice = productPriceInput.text.toString().toDoubleOrNull()
             val farmerId = sessionManager.userId.toInt()
+            val prodImage = getImageByteArray(productImage)
 
             if (productName.isNotEmpty() && productPrice != null) {
                 Log.d("AddProductActivity", "Product name: $productName, Product price: $productPrice")
 
-                val product = Product(0, productName, productPrice.toString(), farmerId, 0,0)
+                val product = Product(0, productName, productPrice.toString(), farmerId, byteArrayToBitmap(prodImage), byteArrayToBitmap(prodImage))
 
                 // Upload the product to the database
                 GlobalScope.launch(Dispatchers.IO) {
-                    val success = uploadProductToDatabase(product)
+                    val success = uploadProductToDatabase(product, prodImage)
                     withContext(Dispatchers.Main) {
                         if (success) {
                             Log.d("AddProductActivity", "Product added successfully")
@@ -80,29 +84,44 @@ class AddProductActivity : AppCompatActivity() {
         }
     }
 
+    private fun byteArrayToBitmap(byteArray: ByteArray): Bitmap {
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+    }
+
+    private fun getImageByteArray(imageView: ImageView): ByteArray {
+        val drawable = imageView.drawable as BitmapDrawable
+        val bitmap = drawable.bitmap
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return stream.toByteArray()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
             val imageUri = data?.data
-            productImage.setImageURI(imageUri)
-            Log.d("AddProductActivity", "Image selected: $imageUri")
+            val inputStream = contentResolver.openInputStream(imageUri!!)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            val resizedBitmap = resizeBitmap(bitmap, 400) // Resize to desired max length, e.g., 500 pixels
+            productImage.setImageBitmap(resizedBitmap)
+            Log.d("AddProductActivity", "Image selected and resized: $imageUri")
         }
     }
 
-    private fun uploadProductToDatabase(product: Product): Boolean {
+    private fun uploadProductToDatabase(product: Product, prodImage: ByteArray): Boolean {
         var connection: Connection? = null
         var preparedStatement: PreparedStatement? = null
         return try {
             Log.d("AddProductActivity", "Connecting to database...")
             connection = DatabaseManager.getConnection()
 
-            val sql = "INSERT INTO product (name, description, price, farmer_id, created_at) VALUES (?, ?, ?, ?, now())"
+            val sql = "INSERT INTO product (name, description, price, farmer_id, prod_image, created_at) VALUES (?, ?, ?, ?, ?, now())"
             preparedStatement = connection.prepareStatement(sql)
             preparedStatement.setString(1, product.name)
             preparedStatement.setString(2, "name")
-            preparedStatement.setDouble(3, product.price.toDouble() )
+            preparedStatement.setDouble(3, product.price.toDouble())
             preparedStatement.setInt(4, product.farmerId)
-
+            preparedStatement.setBytes(5, prodImage)
 
             // Execute the statement
             val rowsAffected = preparedStatement.executeUpdate()
@@ -117,5 +136,22 @@ class AddProductActivity : AppCompatActivity() {
             connection?.close()
             Log.d("AddProductActivity", "Database connection closed")
         }
+    }
+
+    // Utility function to resize bitmap
+    private fun resizeBitmap(source: Bitmap, maxLength: Int): Bitmap {
+        val aspectRatio = source.width.toFloat() / source.height.toFloat()
+        val width: Int
+        val height: Int
+
+        if (source.width > source.height) {
+            width = maxLength
+            height = (maxLength / aspectRatio).toInt()
+        } else {
+            height = maxLength
+            width = (maxLength * aspectRatio).toInt()
+        }
+
+        return Bitmap.createScaledBitmap(source, width, height, true)
     }
 }

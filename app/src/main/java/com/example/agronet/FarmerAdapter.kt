@@ -34,6 +34,7 @@ class FarmerAdapter(
         holder.fname.text = farmer.fname
         holder.lname.text = farmer.lname
         holder.location.text = farmer.location
+        holder.farmType.text = farmer.farmerType
         val bitmap = BitmapFactory.decodeByteArray(farmer.profileImg, 0, farmer.profile_img.size)
 
         holder.farmerImg.setImageBitmap(bitmap)

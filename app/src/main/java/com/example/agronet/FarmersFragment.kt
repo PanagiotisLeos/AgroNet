@@ -69,7 +69,7 @@ class FarmersFragment : Fragment(),OnFarmerClickListener {
                     val profImg = resultSet.getBytes("prof_image")
                     val type = resultSet.getString("type")
                     val description = resultSet.getString("description")
-                    val farmer = Farmer(id, fname, lname, location, profImg, description, type)
+                    val farmer = Farmer(id, fname, lname, location, profImg, type, description)
                     farmersList.add(farmer)
                 }
 

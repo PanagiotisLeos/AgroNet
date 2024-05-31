@@ -1,5 +1,7 @@
 package com.example.agronet
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.ImageView
@@ -9,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
+import java.io.ByteArrayOutputStream
 
 class CheckoutActivity : AppCompatActivity() {
 
@@ -47,7 +50,7 @@ class CheckoutActivity : AppCompatActivity() {
             val productQuantityTextView = itemView.findViewById<TextView>(R.id.productQuantity)
             val productPriceTextView = itemView.findViewById<TextView>(R.id.productPrice)
 
-            productImageView.setImageResource(item.productImage)
+            productImageView.setImageBitmap(byteArrayToBitmap(item.productImage))
             productNameTextView.text = item.productName
             productQuantityTextView.text = "Quantity: ${item.quantity} Kg"
             productPriceTextView.text = String.format("Total: €%.2f", item.totalPrice)
@@ -85,5 +88,15 @@ class CheckoutActivity : AppCompatActivity() {
             CartManager.clearCart()
             finish() // Close the checkout activity
         }
+    }
+
+    private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return stream.toByteArray()
+    }
+
+    private fun byteArrayToBitmap(byteArray: ByteArray?): Bitmap {
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray?.size ?: 0)
     }
 }

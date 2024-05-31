@@ -18,11 +18,11 @@ class ProductAdapter(private val productContext: Context, private val productLis
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = productList.getOrNull(position)
-        if (product!= null) {
+        if (product != null) {
             holder.productName.text = product.name
             holder.productPrice.text = product.price
-            holder.productImage.setImageResource(product.imageResId)
-            holder.postedByImageView.setImageResource(product.postedByImageResId)
+            holder.productImage.setImageBitmap(product.imageResId)
+            holder.postedByImageView.setImageBitmap(product.postedByImageResId)
         }
     }
 

@@ -2,6 +2,8 @@ package com.example.agronet
 
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -63,7 +65,7 @@ class CheckoutFragment : Fragment() {
             val productQuantityTextView = itemView.findViewById<TextView>(R.id.productQuantity)
             val productPriceTextView = itemView.findViewById<TextView>(R.id.productPrice)
 
-            productImageView.setImageResource(item.productImage)
+            productImageView.setImageBitmap(byteArrayToBitmap(item.productImage))
             productNameTextView.text = item.productName
             productQuantityTextView.text = "Quantity: ${item.quantity} Kg"
             productPriceTextView.text = String.format("Total: €%.2f", item.totalPrice)
@@ -147,5 +149,8 @@ class CheckoutFragment : Fragment() {
                 }
             }
         }
+    }
+    private fun byteArrayToBitmap(byteArray: ByteArray?): Bitmap {
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray?.size ?: 0)
     }
 }

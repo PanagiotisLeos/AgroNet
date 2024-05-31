@@ -2,6 +2,7 @@ package com.example.agronet
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,11 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.sql.Connection
@@ -41,9 +45,10 @@ class FarmerDetailsFragment : Fragment() {
     private lateinit var name: TextView
     private lateinit var description: TextView
     private lateinit var location: TextView
+    private lateinit var profileImg: ImageView
     private lateinit var starButton: Button
     private var isStarred = false
-
+    private lateinit var productRecyclerView: RecyclerView
 
 
 
@@ -56,11 +61,11 @@ class FarmerDetailsFragment : Fragment() {
         name = view.findViewById(R.id.farmerName)
         description = view.findViewById(R.id.farmerDescription)
         location = view.findViewById(R.id.farmerLocation)
+        profileImg = view.findViewById(R.id.farmerProfImage)
         starButton = view.findViewById(R.id.starButton)
+        productRecyclerView = view.findViewById(R.id.productRecyclerView)
 
         sessionManager = SessionManager(requireContext())
-
-
 
 
         val farmerId = arguments?.getInt(ARG_FARMER_ID)
@@ -68,12 +73,12 @@ class FarmerDetailsFragment : Fragment() {
         if (farmerId == null) return view
         fetchFarmerProfile(farmerId)
 
-        starButton.setOnClickListener{
-            if(isStarred) {
-            removeStar(sessionManager.userId.toInt(), farmerId)
-            isStarred = false }
-            else
-            addStar(sessionManager.userId.toInt(), farmerId)
+        starButton.setOnClickListener {
+            if (isStarred) {
+                removeStar(sessionManager.userId.toInt(), farmerId)
+                isStarred = false
+            } else
+                addStar(sessionManager.userId.toInt(), farmerId)
             isStarred = true
         }
 
@@ -86,46 +91,87 @@ class FarmerDetailsFragment : Fragment() {
             var connection: Connection? = null
             try {
                 connection = DatabaseManager.getConnection()
-                val query = "SELECT * FROM farmer WHERE id = ?"
+                val query = """
+                SELECT farmer.*, star.id AS star_id, product.id AS product_id, product.name AS product_name, 
+                       product.price AS product_price, product.prod_image AS product_image 
+                FROM farmer 
+                LEFT OUTER JOIN star ON farmer.id = star.farmer_id AND star.customer_id = ${sessionManager.userId} 
+                LEFT OUTER JOIN product ON farmer.id = product.farmer_id 
+                WHERE farmer.id = ?
+            """
                 val preparedStatement = connection.prepareStatement(query)
                 preparedStatement.setInt(1, farmerId)
+                val resultSet = preparedStatement.executeQuery()
 
-                val resultSet =
-                    preparedStatement.executeQuery("SELECT * FROM farmer left outer join star on farmer.id = star.farmer_id AND star.customer_id = ${sessionManager.userId} WHERE farmer.id = $farmerId ");
-                if (resultSet.next()) {
-                    val fname = resultSet.getString("first_name")
-                    val lname = resultSet.getString("last_name")
-                    val desc = resultSet.getString("description")
-                    val loc = resultSet.getString("location")
-                    val star = resultSet.getInt("star.id")
-                    launch(Dispatchers.Main) {
-                        name.text = "$fname $lname"
-                        description.text = desc
-                        location.text = loc
+                var farmerDetailsLoaded = false
+                val products = mutableListOf<Product>()
+                while (resultSet.next()) {
+                    if (!farmerDetailsLoaded) {
+                        val fname = resultSet.getString("first_name")
+                        val lname = resultSet.getString("last_name")
+                        val desc = resultSet.getString("description")
+                        val loc = resultSet.getString("location")
+                        val profImg = resultSet.getBytes("prof_image")
+                        val star = resultSet.getInt("star_id")
 
-                        if (star != 0){
-                            isStarred = true
-                            starButton.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_star_gold,0,0)
+                        launch(Dispatchers.Main) {
+                            name.text = "$fname $lname"
+                            description.text = desc
+                            location.text = loc
+
+                            val bitmap = BitmapFactory.decodeByteArray(profImg, 0, profImg.size)
+                            profileImg.setImageBitmap(bitmap)
+
+                            if (star != 0) {
+                                isStarred = true
+                                starButton.setCompoundDrawablesWithIntrinsicBounds(
+                                    0,
+                                    R.drawable.ic_star_gold,
+                                    0,
+                                    0
+                                )
+                            } else {
+                                isStarred = false
+                            }
                         }
-                        else {
-                            isStarred = false
-                        }
 
+                        farmerDetailsLoaded = true
+                    }
+
+                    val productId = resultSet.getInt("product_id")
+                    if (productId != 0) {
+                        val productName = resultSet.getString("product_name")
+                        val productPrice = resultSet.getString("product_price")
+                        val prodImage = resultSet.getBytes("product_image")
+                        val imageBitmap =
+                            BitmapFactory.decodeByteArray(prodImage, 0, prodImage.size)
+
+                        val product = Product(
+                            productId,
+                            productName,
+                            productPrice,
+                            farmerId,
+                            imageBitmap,
+                            imageBitmap
+                        )
+                        products.add(product)
                     }
                 }
                 preparedStatement.close()
+                launch(Dispatchers.Main) {
+                    setupRecyclerView(products)
+                }
             } catch (e: SQLException) {
                 Log.e("FarmerDetailsFragment", "SQL Exception: ${e.message}", e)
                 launch(Dispatchers.Main) {
-                    name.text = "Error loading data"
+                    Toast.makeText(requireContext(), "Failed to load data", Toast.LENGTH_SHORT)
+                        .show()
                 }
             } finally {
                 connection?.close()
             }
         }
-
     }
-
 
 
     private fun addStar(userId: Int, farmerId: Int) {
@@ -133,7 +179,8 @@ class FarmerDetailsFragment : Fragment() {
             var connection: Connection? = null
             try {
                 connection = DatabaseManager.getConnection()
-                val star = Star(userId, farmerId,System.currentTimeMillis()) // Create a Star object
+                val star =
+                    Star(userId, farmerId, System.currentTimeMillis()) // Create a Star object
 
                 val query = "INSERT INTO star (customer_id, farmer_id) VALUES (?, ?)"
                 val preparedStatement = connection.prepareStatement(query)
@@ -144,13 +191,22 @@ class FarmerDetailsFragment : Fragment() {
 
                 launch(Dispatchers.Main) {
                     Toast.makeText(requireContext(), "Added to stars", Toast.LENGTH_SHORT).show()
-                    starButton.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_star_gold,0,0)
+                    starButton.setCompoundDrawablesWithIntrinsicBounds(
+                        0,
+                        R.drawable.ic_star_gold,
+                        0,
+                        0
+                    )
                     isStarred = true
                 }
             } catch (e: SQLException) {
                 Log.e("FarmerDetailsFragment", "SQL Exception: ${e.message}", e)
                 launch(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Failed to add to favorites", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Failed to add to favorites",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } finally {
                 connection?.close()
@@ -172,7 +228,8 @@ class FarmerDetailsFragment : Fragment() {
 
                 launch(Dispatchers.Main) {
                     if (rowsAffected > 0) {
-                        Toast.makeText(requireContext(), "Removed from stars", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Removed from stars", Toast.LENGTH_SHORT)
+                            .show()
                         starButton.setCompoundDrawablesWithIntrinsicBounds(
                             null,
                             ContextCompat.getDrawable(requireContext(), R.drawable.ic_star),
@@ -181,18 +238,27 @@ class FarmerDetailsFragment : Fragment() {
                         )
                         isStarred = false
                     } else {
-                        Toast.makeText(requireContext(), "Star not found", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Star not found", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             } catch (e: SQLException) {
                 Log.e("FarmerDetailsFragment", "SQL Exception: ${e.message}", e)
                 launch(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Failed to remove from favorites", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Failed to remove from favorites",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } finally {
                 connection?.close()
             }
         }
+    }
+    private fun setupRecyclerView(products: List<Product>) {
+        productRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        productRecyclerView.adapter = ProductAdapter(requireContext(), products)
     }
 
 }
