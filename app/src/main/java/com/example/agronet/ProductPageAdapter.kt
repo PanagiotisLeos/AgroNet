@@ -24,7 +24,7 @@ class ProductPageAdapter(private val productContext: Context, private val produc
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = productList[position]
         holder.productName.text = product.name
-        holder.productPrice.text = product.price
+        holder.productPrice.text = "${product.price} /per kg"
         holder.productImage.setImageBitmap(product.imageResId)
         holder.postedByImageView.setImageBitmap(product.postedByImageResId)
 

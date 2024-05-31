@@ -1,7 +1,5 @@
 package com.example.agronet
 
-import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
@@ -9,12 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,11 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.sql.Connection
 import java.sql.SQLException
-import java.time.Instant.now
-
 
 class FarmerDetailsFragment : Fragment() {
-
 
     companion object {
         private const val ARG_FARMER_ID = "farmerId"
@@ -41,16 +35,13 @@ class FarmerDetailsFragment : Fragment() {
     }
 
     private lateinit var sessionManager: SessionManager
-
     private lateinit var name: TextView
     private lateinit var description: TextView
     private lateinit var location: TextView
     private lateinit var profileImg: ImageView
     private lateinit var starButton: Button
-    private var isStarred = false
     private lateinit var productRecyclerView: RecyclerView
-
-
+    private var isStarred = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,38 +58,37 @@ class FarmerDetailsFragment : Fragment() {
 
         sessionManager = SessionManager(requireContext())
 
-
         val farmerId = arguments?.getInt(ARG_FARMER_ID)
         Log.d("FarmerDetailsFragment", "Farmer ID: $farmerId")
         if (farmerId == null) return view
-        fetchFarmerProfile(farmerId)
+        fetchFarmerProfileAndProducts(farmerId)
 
         starButton.setOnClickListener {
             if (isStarred) {
                 removeStar(sessionManager.userId.toInt(), farmerId)
                 isStarred = false
-            } else
+            } else {
                 addStar(sessionManager.userId.toInt(), farmerId)
-            isStarred = true
+                isStarred = true
+            }
         }
 
         return view
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun fetchFarmerProfile(farmerId: Int) {
+    private fun fetchFarmerProfileAndProducts(farmerId: Int) {
         lifecycleScope.launch(Dispatchers.IO) {
             var connection: Connection? = null
             try {
                 connection = DatabaseManager.getConnection()
                 val query = """
-                SELECT farmer.*, star.id AS star_id, product.id AS product_id, product.name AS product_name, 
-                       product.price AS product_price, product.prod_image AS product_image 
-                FROM farmer 
-                LEFT OUTER JOIN star ON farmer.id = star.farmer_id AND star.customer_id = ${sessionManager.userId} 
-                LEFT OUTER JOIN product ON farmer.id = product.farmer_id 
-                WHERE farmer.id = ?
-            """
+                    SELECT farmer.*, star.id AS star_id, product.id AS product_id, product.name AS product_name, 
+                           product.price AS product_price, product.prod_image AS product_image 
+                    FROM farmer 
+                    LEFT OUTER JOIN star ON farmer.id = star.farmer_id AND star.customer_id = ${sessionManager.userId} 
+                    LEFT OUTER JOIN product ON farmer.id = product.farmer_id 
+                    WHERE farmer.id = ?
+                """
                 val preparedStatement = connection.prepareStatement(query)
                 preparedStatement.setInt(1, farmerId)
                 val resultSet = preparedStatement.executeQuery()
@@ -124,12 +114,7 @@ class FarmerDetailsFragment : Fragment() {
 
                             if (star != 0) {
                                 isStarred = true
-                                starButton.setCompoundDrawablesWithIntrinsicBounds(
-                                    0,
-                                    R.drawable.ic_star_gold,
-                                    0,
-                                    0
-                                )
+                                starButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_star_gold, 0, 0)
                             } else {
                                 isStarred = false
                             }
@@ -143,17 +128,9 @@ class FarmerDetailsFragment : Fragment() {
                         val productName = resultSet.getString("product_name")
                         val productPrice = resultSet.getString("product_price")
                         val prodImage = resultSet.getBytes("product_image")
-                        val imageBitmap =
-                            BitmapFactory.decodeByteArray(prodImage, 0, prodImage.size)
+                        val imageBitmap = BitmapFactory.decodeByteArray(prodImage, 0, prodImage.size)
 
-                        val product = Product(
-                            productId,
-                            productName,
-                            productPrice,
-                            farmerId,
-                            imageBitmap,
-                            imageBitmap
-                        )
+                        val product = Product(productId, productName, "$productPrice /per kg", farmerId, imageBitmap, imageBitmap)
                         products.add(product)
                     }
                 }
@@ -164,8 +141,7 @@ class FarmerDetailsFragment : Fragment() {
             } catch (e: SQLException) {
                 Log.e("FarmerDetailsFragment", "SQL Exception: ${e.message}", e)
                 launch(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Failed to load data", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(requireContext(), "Failed to load data", Toast.LENGTH_SHORT).show()
                 }
             } finally {
                 connection?.close()
@@ -173,14 +149,17 @@ class FarmerDetailsFragment : Fragment() {
         }
     }
 
+    private fun setupRecyclerView(products: List<Product>) {
+        productRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        productRecyclerView.adapter = ProductAdapter(requireContext(), products)
+    }
 
     private fun addStar(userId: Int, farmerId: Int) {
         lifecycleScope.launch(Dispatchers.IO) {
             var connection: Connection? = null
             try {
                 connection = DatabaseManager.getConnection()
-                val star =
-                    Star(userId, farmerId, System.currentTimeMillis()) // Create a Star object
+                val star = Star(userId, farmerId, System.currentTimeMillis()) // Create a Star object
 
                 val query = "INSERT INTO star (customer_id, farmer_id) VALUES (?, ?)"
                 val preparedStatement = connection.prepareStatement(query)
@@ -191,22 +170,13 @@ class FarmerDetailsFragment : Fragment() {
 
                 launch(Dispatchers.Main) {
                     Toast.makeText(requireContext(), "Added to stars", Toast.LENGTH_SHORT).show()
-                    starButton.setCompoundDrawablesWithIntrinsicBounds(
-                        0,
-                        R.drawable.ic_star_gold,
-                        0,
-                        0
-                    )
+                    starButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_star_gold, 0, 0)
                     isStarred = true
                 }
             } catch (e: SQLException) {
                 Log.e("FarmerDetailsFragment", "SQL Exception: ${e.message}", e)
                 launch(Dispatchers.Main) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Failed to add to favorites",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(requireContext(), "Failed to add to favorites", Toast.LENGTH_SHORT).show()
                 }
             } finally {
                 connection?.close()
@@ -228,8 +198,7 @@ class FarmerDetailsFragment : Fragment() {
 
                 launch(Dispatchers.Main) {
                     if (rowsAffected > 0) {
-                        Toast.makeText(requireContext(), "Removed from stars", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(requireContext(), "Removed from stars", Toast.LENGTH_SHORT).show()
                         starButton.setCompoundDrawablesWithIntrinsicBounds(
                             null,
                             ContextCompat.getDrawable(requireContext(), R.drawable.ic_star),
@@ -238,27 +207,17 @@ class FarmerDetailsFragment : Fragment() {
                         )
                         isStarred = false
                     } else {
-                        Toast.makeText(requireContext(), "Star not found", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(requireContext(), "Star not found", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: SQLException) {
                 Log.e("FarmerDetailsFragment", "SQL Exception: ${e.message}", e)
                 launch(Dispatchers.Main) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Failed to remove from favorites",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(requireContext(), "Failed to remove from favorites", Toast.LENGTH_SHORT).show()
                 }
             } finally {
                 connection?.close()
             }
         }
     }
-    private fun setupRecyclerView(products: List<Product>) {
-        productRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        productRecyclerView.adapter = ProductAdapter(requireContext(), products)
-    }
-
 }

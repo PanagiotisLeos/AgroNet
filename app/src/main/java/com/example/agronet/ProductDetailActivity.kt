@@ -19,6 +19,7 @@ class ProductDetailActivity : AppCompatActivity() {
     private lateinit var productImageView: ImageView
     private lateinit var productPriceTextView: TextView
     private lateinit var farmerImageView: ImageView
+    private lateinit var farmerName: TextView
     private lateinit var quantityInput: EditText
     private lateinit var totalPriceLabel: TextView
     private lateinit var addToCartButton: AppCompatButton
@@ -36,6 +37,7 @@ class ProductDetailActivity : AppCompatActivity() {
         productImageView = findViewById(R.id.productImage)
         productPriceTextView = findViewById(R.id.productPricePerKg)
         farmerImageView = findViewById(R.id.farmerImage)
+        farmerName = findViewById(R.id.postedByLabel)
         quantityInput = findViewById(R.id.quantityInput)
         totalPriceLabel = findViewById(R.id.totalPriceLabel)
         addToCartButton = findViewById(R.id.addToCartButton)
