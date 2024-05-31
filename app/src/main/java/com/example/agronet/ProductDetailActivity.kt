@@ -28,6 +28,7 @@ class ProductDetailActivity : AppCompatActivity() {
     private var isEditing = false
     private var cartItem: CartItem? = null
     private var productId: Int = 0
+    private var farmerId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +48,7 @@ class ProductDetailActivity : AppCompatActivity() {
         val productImageByteArray = intent.getByteArrayExtra("PRODUCT_IMAGE")
         val productPrice = intent.getStringExtra("PRODUCT_PRICE")
         val farmerImageByteArray = intent.getByteArrayExtra("POSTED_BY_IMAGE")
+        farmerId = intent.getIntExtra("FARMER_ID",0)
 
         productNameTextView.text = productName
 
@@ -81,7 +83,7 @@ class ProductDetailActivity : AppCompatActivity() {
         if (isEditing) {
             val quantity = intent.getDoubleExtra("QUANTITY", 0.0)
             quantityInput.setText(quantity.toString())
-            cartItem = CartItem(productId, productImageByteArray, productName ?: "", quantity, productPricePerKg, quantity * productPricePerKg)
+            cartItem = CartItem(productId,farmerId, productImageByteArray, productName ?: "", quantity, productPricePerKg, quantity * productPricePerKg)
         }
 
         addToCartButton.setOnClickListener {
@@ -109,7 +111,7 @@ class ProductDetailActivity : AppCompatActivity() {
             if (isEditing && cartItem != null) {
                 CartManager.removeItem(cartItem!!)
             }
-            val cartItem = CartItem(productId, productImage, productName, quantity, productPricePerKg, totalPrice)
+            val cartItem = CartItem(productId, farmerId, productImage, productName, quantity, productPricePerKg, totalPrice)
             CartManager.addItem(cartItem)
             Toast.makeText(this, "$productName added to cart", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, MainActivity::class.java)

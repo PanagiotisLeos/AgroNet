@@ -36,6 +36,7 @@ class ProductPageAdapter(private val productContext: Context, private val produc
                 putExtra("POSTED_BY_IMAGE",
                     product.postedByImageResId?.let { it1 -> bitmapToByteArray(it1) })
                 putExtra("PRODUCT_ID", product.id)
+                putExtra("FARMER_ID",product.farmerId)
             }
             productContext.startActivity(intent)
         }
