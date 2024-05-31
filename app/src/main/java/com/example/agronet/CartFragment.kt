@@ -87,12 +87,6 @@ class CartFragment : Fragment() {
         }
     }
 
-    private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-        return stream.toByteArray()
-    }
-
     private fun byteArrayToBitmap(byteArray: ByteArray): Bitmap {
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
     }

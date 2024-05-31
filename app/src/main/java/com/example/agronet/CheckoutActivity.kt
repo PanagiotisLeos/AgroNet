@@ -3,6 +3,7 @@ package com.example.agronet
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -15,7 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.ByteArrayOutputStream
 import java.sql.Connection
 import java.sql.PreparedStatement
 
@@ -114,19 +114,26 @@ class CheckoutActivity : AppCompatActivity() {
                     orderDate = orderDate
                 )
 
+                Log.d("CheckoutActivity", "Processing order for farmerId: $farmerId, totalAmount: €$totalAmountForFarmer")
+
                 // Upload the order to the database
                 val success = uploadOrderToDatabase(order)
                 if (!success) {
+                    Log.e("CheckoutActivity", "Failed to upload order for farmerId: $farmerId")
                     allOrdersSuccessful = false
+                } else {
+                    Log.d("CheckoutActivity", "Successfully uploaded order for farmerId: $farmerId")
                 }
             }
 
             withContext(Dispatchers.Main) {
                 if (allOrdersSuccessful) {
+                    Log.d("CheckoutActivity", "All orders confirmed successfully")
                     Toast.makeText(this@CheckoutActivity, "Order Confirmed!", Toast.LENGTH_SHORT).show()
                     CartManager.clearCart()
                     finish() // Close the checkout activity
                 } else {
+                    Log.e("CheckoutActivity", "Failed to confirm some orders")
                     Toast.makeText(this@CheckoutActivity, "Failed to confirm some orders", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -167,9 +174,10 @@ class CheckoutActivity : AppCompatActivity() {
                 }
             }
 
+            Log.d("CheckoutActivity", "Order upload successful for farmerId: ${order.farmerId}, orderId: ${orderPreparedStatement.generatedKeys.getInt(1)}")
             orderRowsAffected > 0
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("CheckoutActivity", "Error uploading order to database", e)
             false
         } finally {
             orderPreparedStatement?.close()
@@ -182,3 +190,4 @@ class CheckoutActivity : AppCompatActivity() {
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray?.size ?: 0)
     }
 }
+
