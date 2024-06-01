@@ -63,13 +63,17 @@ class FarmerDetailsFragment : Fragment() {
         if (farmerId == null) return view
         fetchFarmerProfileAndProducts(farmerId)
 
+
+
         starButton.setOnClickListener {
             if (isStarred) {
                 removeStar(sessionManager.userId.toInt(), farmerId)
                 isStarred = false
+                fetchFarmerProfileAndProducts(farmerId)
             } else {
                 addStar(sessionManager.userId.toInt(), farmerId)
                 isStarred = true
+                fetchFarmerProfileAndProducts(farmerId)
             }
         }
 
@@ -82,12 +86,43 @@ class FarmerDetailsFragment : Fragment() {
             try {
                 connection = DatabaseManager.getConnection()
                 val query = """
-                    SELECT farmer.*, star.id AS star_id, product.id AS product_id, product.name AS product_name, 
-                           product.price AS product_price, product.prod_image AS product_image 
-                    FROM farmer 
-                    LEFT OUTER JOIN star ON farmer.id = star.farmer_id AND star.customer_id = ${sessionManager.userId} 
-                    LEFT OUTER JOIN product ON farmer.id = product.farmer_id 
-                    WHERE farmer.id = ?
+                SELECT 
+                    farmer.*,
+                    COALESCE(total_stars.total_stars, 0) AS total_stars,
+                    product.id AS product_id, 
+                    product.name AS product_name, 
+                    product.price AS product_price, 
+                    product.prod_image AS product_image,
+                    CASE 
+                        WHEN customer_star.star_id IS NOT NULL THEN 1 
+                        ELSE 0 
+                    END AS customer_has_star
+                FROM 
+                    farmer 
+                LEFT OUTER JOIN 
+                    product ON farmer.id = product.farmer_id 
+                LEFT JOIN (
+                    SELECT 
+                        farmer_id, 
+                        COUNT(*) AS total_stars
+                    FROM 
+                        star 
+                    GROUP BY 
+                        farmer_id
+                ) AS total_stars ON farmer.id = total_stars.farmer_id
+                LEFT JOIN (
+                    SELECT 
+                        farmer_id, 
+                        id AS star_id
+                    FROM 
+                        star
+                    WHERE 
+                        customer_id = ${sessionManager.userId}
+                ) AS customer_star ON farmer.id = customer_star.farmer_id
+                WHERE 
+                    farmer.id = ?;
+                
+                
                 """
                 val preparedStatement = connection.prepareStatement(query)
                 preparedStatement.setInt(1, farmerId)
@@ -102,12 +137,14 @@ class FarmerDetailsFragment : Fragment() {
                         val desc = resultSet.getString("description")
                         val loc = resultSet.getString("location")
                         val profImg = resultSet.getBytes("prof_image")
-                        val star = resultSet.getInt("star_id")
+                        val star = resultSet.getInt("customer_has_star")
+                        val totalStars = resultSet.getInt("total_stars")
 
                         launch(Dispatchers.Main) {
                             name.text = "$fname $lname"
                             description.text = desc
                             location.text = loc
+                            starButton.text = totalStars.toString()
 
                             val bitmap = BitmapFactory.decodeByteArray(profImg, 0, profImg.size)
                             profileImg.setImageBitmap(bitmap)

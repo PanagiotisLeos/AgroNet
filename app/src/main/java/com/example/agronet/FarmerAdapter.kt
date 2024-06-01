@@ -21,7 +21,9 @@ class FarmerAdapter(
         val lname: TextView = view.findViewById(R.id.farmer_last_name)
         val location: TextView = view.findViewById(R.id.farm_location)
         val farmType: TextView = view.findViewById(R.id.farm_type)
-        val rootView = view // To handle click events on the entire row
+        val star: ImageView = view.findViewById(R.id.star)
+        val totalStars: TextView = view.findViewById(R.id.totalStars)
+        val rootView = view
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FarmerViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -35,14 +37,24 @@ class FarmerAdapter(
         holder.lname.text = farmer.lname
         holder.location.text = farmer.location
         holder.farmType.text = farmer.farmerType
-        val bitmap = BitmapFactory.decodeByteArray(farmer.profileImg, 0, farmer.profile_img.size)
+        holder.totalStars.text = farmer.total_stars.toString()
 
-        holder.farmerImg.setImageBitmap(bitmap)
-
-        // Handle click events here
-        holder.rootView.setOnClickListener {
-            listener.onFarmerClick(farmer.id) // Assuming Farmer has an ID
+        if (farmer.profileImg !== null) {
+            val bitmap = BitmapFactory.decodeByteArray(farmer.profileImg, 0, farmer.profile_img.size)
+            holder.farmerImg.setImageBitmap(bitmap)
         }
+        else holder.farmerImg.setImageResource(R.drawable.farmer_photo)
+
+        holder.rootView.setOnClickListener {
+            listener.onFarmerClick(farmer.id)
+        }
+
+        if (farmer.isCustomerHasStarred) {
+            holder.star.setImageResource(R.drawable.ic_star_gold);
+        } else {
+            holder.star.setImageResource(R.drawable.ic_star);
+        }
+
     }
 
 

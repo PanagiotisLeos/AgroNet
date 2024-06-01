@@ -11,12 +11,13 @@ public class Farmer extends User implements Parcelable {
     int id;
     String fname;
     String lname;
-     String location;
-     byte[] profile_img;
-     String farmerType;
-     String description;
+    String location;
+    byte[] profile_img;
+    String farmerType;
+    String description;
     private List<Star> stars;
-
+    int total_stars;
+    boolean customerHasStarred;
 
     protected Farmer(Parcel in) {
         id = in.readInt();
@@ -26,8 +27,15 @@ public class Farmer extends User implements Parcelable {
         profile_img = in.createByteArray();
         farmerType = in.readString();
         description = in.readString();
-    }
+        total_stars = in.readInt();
+        customerHasStarred = in.readByte() != 0;
 
+
+        if (profile_img == null || profile_img.length == 0) {
+            // Set a placeholder for default image
+            profile_img = new byte[] {0};
+        }
+    }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -38,6 +46,8 @@ public class Farmer extends User implements Parcelable {
         dest.writeByteArray(profile_img);
         dest.writeString(farmerType);
         dest.writeString(description);
+        dest.writeInt(total_stars);
+        dest.writeByte((byte) (customerHasStarred ? 1 : 0));
     }
 
     @Override
@@ -57,18 +67,20 @@ public class Farmer extends User implements Parcelable {
         }
     };
 
-    public Farmer(int id, String fname, String lname, String location, byte[] profile_img, String farmerType, String description) {
+    public Farmer(int id, String fname, String lname, String location, byte[] profile_img, String farmerType, String description, int total_stars, boolean customerHasStarred) {
         this.id = id;
         this.fname = fname;
         this.lname = lname;
         this.location = location;
-        this.profile_img = profile_img;
+        this.profile_img = (profile_img == null || profile_img.length == 0) ? new byte[] {0} : profile_img;  // Use placeholder if null
         this.farmerType = farmerType;
         this.description = description;
         this.stars = new ArrayList<>();
+        this.total_stars = total_stars;
+        this.customerHasStarred = customerHasStarred;
     }
 
-    // Getters and setters for each field
+    // Getters and setters
     public String getName() {
         return fname;
     }
@@ -97,10 +109,9 @@ public class Farmer extends User implements Parcelable {
         return profile_img;
     }
 
-    public void setProfileImg(byte[] profile_img) {
-        this.profile_img = profile_img;
+    public void setProfileImg(byte[] profileImg) {
+        this.profile_img = (profileImg == null || profileImg.length == 0) ? new byte[] {0} : profileImg;  // Use placeholder if null
     }
-
     public String getFarmerType() {
         return farmerType;
     }
@@ -121,6 +132,19 @@ public class Farmer extends User implements Parcelable {
         return stars;
     }
 
+    public int getTotalStars() {
+        return total_stars;
+    }
 
+    public void setTotalStars(int total_stars) {
+        this.total_stars = total_stars;
+    }
 
+    public boolean isCustomerHasStarred() {
+        return customerHasStarred;
+    }
+
+    public void setCustomerHasStarred(boolean customerHasStarred) {
+        this.customerHasStarred = customerHasStarred;
+    }
 }
