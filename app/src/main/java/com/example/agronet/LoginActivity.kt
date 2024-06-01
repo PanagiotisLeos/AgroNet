@@ -73,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
                         finish()
                     }
                     1 -> {
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        val intent = Intent(this@LoginActivity, MainActivityFarmerui::class.java)
                         startActivity(intent)
                         finish()
                     }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_products"
+        android:icon="@drawable/carrot"
+        android:title="@string/Products"/>
+    <item
+        android:id="@+id/navigation_My_orders"
+        android:icon="@drawable/orders_icon"
+        android:title="@string/My_orders" />
+    <item
+        android:id="@+id/navigation_farmers"
+        android:icon="@drawable/farmer"
+        android:title="@string/Farmers" />
+
+</menu>
