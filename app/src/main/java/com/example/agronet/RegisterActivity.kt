@@ -2,11 +2,14 @@ package com.example.agronet
 
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,27 +21,76 @@ import java.sql.SQLException
 
 class RegisterActivity : AppCompatActivity() {
 
-    private lateinit var usernameEditText: EditText
-    private lateinit var emailEditText: EditText
-    private lateinit var passwordEditText: EditText
     private lateinit var profileSpinner: Spinner
     private lateinit var buttonSignUp: Button
+    private lateinit var uploadImageButton: Button
+
+    private lateinit var customerFields: LinearLayout
+    private lateinit var farmerFields: LinearLayout
+
+    // Customer fields
+    private lateinit var customerEmailEditText: EditText
+    private lateinit var customerPasswordEditText: EditText
+    private lateinit var firstNameEditText: EditText
+    private lateinit var lastNameEditText: EditText
+    private lateinit var telephoneEditText: EditText
+
+    // Farmer fields
+    private lateinit var farmerEmailEditText: EditText
+    private lateinit var farmerPasswordEditText: EditText
+    private lateinit var firstNameFarmerEditText: EditText
+    private lateinit var lastNameFarmerEditText: EditText
+    private lateinit var locationEditText: EditText
+
+    private var selectedImageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.register)
 
-        usernameEditText = findViewById(R.id.usernameEditText)
-        emailEditText = findViewById(R.id.emailEditText)
-        passwordEditText = findViewById(R.id.passwordEditText)
         profileSpinner = findViewById(R.id.profileSpinner)
         buttonSignUp = findViewById(R.id.signUpButton)
+        uploadImageButton = findViewById(R.id.uploadImageButton)
+
+        customerFields = findViewById(R.id.customerFields)
+        farmerFields = findViewById(R.id.farmerFields)
+
+        // Initialize customer fields
+        customerEmailEditText = findViewById(R.id.customerEmailEditText)
+        customerPasswordEditText = findViewById(R.id.customerPasswordEditText)
+        firstNameEditText = findViewById(R.id.firstNameEditText)
+        lastNameEditText = findViewById(R.id.lastNameEditText)
+        telephoneEditText = findViewById(R.id.telephoneEditText)
+
+        // Initialize farmer fields
+        farmerEmailEditText = findViewById(R.id.farmerEmailEditText)
+        farmerPasswordEditText = findViewById(R.id.farmerPasswordEditText)
+        firstNameFarmerEditText = findViewById(R.id.firstNameFarmerEditText)
+        lastNameFarmerEditText = findViewById(R.id.lastNameFarmerEditText)
+        locationEditText = findViewById(R.id.locationEditText)
 
         setupSpinner()
 
         buttonSignUp.setOnClickListener {
             registerUser()
         }
+
+        uploadImageButton.setOnClickListener {
+            openFilePicker()
+        }
+    }
+
+    private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            selectedImageUri = uri
+            Toast.makeText(this, "Image selected: $uri", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun openFilePicker() {
+        imagePickerLauncher.launch("image/*")
     }
 
     private fun setupSpinner() {
@@ -57,7 +109,20 @@ class RegisterActivity : AppCompatActivity() {
 
         profileSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                (view as? TextView)?.setTextColor(Color.WHITE)
+                when (position) {
+                    1 -> { // Customer selected
+                        customerFields.visibility = View.VISIBLE
+                        farmerFields.visibility = View.GONE
+                    }
+                    2 -> { // Farmer selected
+                        customerFields.visibility = View.GONE
+                        farmerFields.visibility = View.VISIBLE
+                    }
+                    else -> {
+                        customerFields.visibility = View.GONE
+                        farmerFields.visibility = View.GONE
+                    }
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -67,31 +132,54 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun registerUser() {
-        val username = usernameEditText.text.toString().trim()
-        val email = emailEditText.text.toString().trim()
-        val password = passwordEditText.text.toString().trim()
         val selectedProfile = profileSpinner.selectedItem.toString()
 
-        Log.d("RegisterActivity", "registerUser called with username: $username, email: $email, password: $password, profile: $selectedProfile")
+        Log.d("RegisterActivity", "registerUser called with profile: $selectedProfile")
 
-        if (username.isEmpty() || email.isEmpty() || password.isEmpty() || selectedProfile == "Choose a profile...") {
-            Toast.makeText(this, "Please fill all fields and select a profile", Toast.LENGTH_SHORT).show()
+        if (selectedProfile == "Choose a profile...") {
+            Toast.makeText(this, "Please select a profile", Toast.LENGTH_SHORT).show()
             return
         }
 
         when (selectedProfile) {
-            "Customer" -> CoroutineScope(Dispatchers.IO).launch {
-                Log.d("RegisterActivity", "Inserting user as Customer")
-                insertUserAndCustomer(username, email, password)
+            "Customer" -> {
+                val email = customerEmailEditText.text.toString().trim()
+                val password = customerPasswordEditText.text.toString().trim()
+                val firstName = firstNameEditText.text.toString().trim()
+                val lastName = lastNameEditText.text.toString().trim()
+                val telephone = telephoneEditText.text.toString().trim()
+
+                if (email.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || telephone.isEmpty()) {
+                    Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    Log.d("RegisterActivity", "Inserting user as Customer")
+                    insertUserAndCustomer(email, password, firstName, lastName, telephone)
+                }
             }
-            "Farmer" -> CoroutineScope(Dispatchers.IO).launch {
-                Log.d("RegisterActivity", "Inserting user as Farmer")
-                insertUserAndFarmer(username, email, password)
+            "Farmer" -> {
+                val email = farmerEmailEditText.text.toString().trim()
+                val password = farmerPasswordEditText.text.toString().trim()
+                val firstName = firstNameFarmerEditText.text.toString().trim()
+                val lastName = lastNameFarmerEditText.text.toString().trim()
+                val location = locationEditText.text.toString().trim()
+
+                if (email.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || location.isEmpty()) {
+                    Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    Log.d("RegisterActivity", "Inserting user as Farmer")
+                    insertUserAndFarmer(email, password, firstName, lastName, location)
+                }
             }
         }
     }
 
-    private suspend fun insertUserAndCustomer(username: String, email: String, password: String) {
+    private suspend fun insertUserAndCustomer(email: String, password: String, firstName: String, lastName: String, telephone: String) {
         var connection: Connection? = null
         try {
             Log.d("RegisterActivity", "Getting database connection for Customer")
@@ -104,9 +192,9 @@ class RegisterActivity : AppCompatActivity() {
                 val customerQuery = "INSERT INTO customer (customer_id, first_name, last_name, telephone) VALUES (?, ?, ?, ?)"
                 val customerStmt: PreparedStatement = connection.prepareStatement(customerQuery)
                 customerStmt.setInt(1, userId)
-                customerStmt.setString(2, username)
-                customerStmt.setString(3, "LastName") // Placeholder
-                customerStmt.setString(4, "1234567890") // Placeholder
+                customerStmt.setString(2, firstName)
+                customerStmt.setString(3, lastName)
+                customerStmt.setString(4, telephone)
                 customerStmt.executeUpdate()
                 connection.commit()
 
@@ -130,7 +218,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun insertUserAndFarmer(username: String, email: String, password: String) {
+    private suspend fun insertUserAndFarmer(email: String, password: String, firstName: String, lastName: String, location: String) {
         var connection: Connection? = null
         try {
             Log.d("RegisterActivity", "Getting database connection for Farmer")
@@ -143,12 +231,12 @@ class RegisterActivity : AppCompatActivity() {
                 val farmerQuery = "INSERT INTO farmer (id, first_name, last_name, location, type, prof_image, description) VALUES (?, ?, ?, ?, ?, ?, ?)"
                 val farmerStmt: PreparedStatement = connection.prepareStatement(farmerQuery)
                 farmerStmt.setInt(1, userId)
-                farmerStmt.setString(2, username)
-                farmerStmt.setString(3, "LastName") // Placeholder
-                farmerStmt.setString(4, "Location") // Placeholder
-                farmerStmt.setString(5, "Individual") // Placeholder
+                farmerStmt.setString(2, firstName)
+                farmerStmt.setString(3, lastName)
+                farmerStmt.setString(4, location)
+                farmerStmt.setString(5, "Individual") // Placeholder for type
                 farmerStmt.setNull(6, java.sql.Types.BLOB) // Placeholder for prof_image
-                farmerStmt.setString(7, "Description") // Placeholder
+                farmerStmt.setString(7, "Description") // Placeholder for description
                 farmerStmt.executeUpdate()
                 connection.commit()
 
