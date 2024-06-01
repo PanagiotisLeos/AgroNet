@@ -1,6 +1,8 @@
 package com.example.agronet
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,6 +19,7 @@ class ProductDetailActivity : AppCompatActivity() {
     private lateinit var productImageView: ImageView
     private lateinit var productPriceTextView: TextView
     private lateinit var farmerImageView: ImageView
+    private lateinit var farmerName: TextView
     private lateinit var quantityInput: EditText
     private lateinit var totalPriceLabel: TextView
     private lateinit var addToCartButton: AppCompatButton
@@ -24,6 +27,8 @@ class ProductDetailActivity : AppCompatActivity() {
     private var productPricePerKg: Double = 0.0
     private var isEditing = false
     private var cartItem: CartItem? = null
+    private var productId: Int = 0
+    private var farmerId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,22 +38,39 @@ class ProductDetailActivity : AppCompatActivity() {
         productImageView = findViewById(R.id.productImage)
         productPriceTextView = findViewById(R.id.productPricePerKg)
         farmerImageView = findViewById(R.id.farmerImage)
+        farmerName = findViewById(R.id.postedByLabel)
         quantityInput = findViewById(R.id.quantityInput)
         totalPriceLabel = findViewById(R.id.totalPriceLabel)
         addToCartButton = findViewById(R.id.addToCartButton)
 
         val productName = intent.getStringExtra("PRODUCT_NAME")
-        val productImage = intent.getIntExtra("PRODUCT_IMAGE", 0)
+        productId = intent.getIntExtra("PRODUCT_ID", 0)
+        val productImageByteArray = intent.getByteArrayExtra("PRODUCT_IMAGE")
         val productPrice = intent.getStringExtra("PRODUCT_PRICE")
-        val farmerImage = intent.getIntExtra("POSTED_BY_IMAGE", 0)
+        val farmerImageByteArray = intent.getByteArrayExtra("POSTED_BY_IMAGE")
+        farmerId = intent.getIntExtra("FARMER_ID",0)
 
         productNameTextView.text = productName
-        productImageView.setImageResource(productImage)
         productPriceTextView.text = productPrice
-        farmerImageView.setImageResource(farmerImage)
+
+        if (productImageByteArray != null) {
+            productImageView.setImageBitmap(byteArrayToBitmap(productImageByteArray))
+        } else {
+            productImageView.setImageResource(R.drawable.bananas)
+        }
+
+
+
+        if (farmerImageByteArray != null) {
+            farmerImageView.setImageBitmap(byteArrayToBitmap(farmerImageByteArray))
+        } else {
+            farmerImageView.setImageResource(R.drawable.farmer_photo) 
+        }
 
         // Extract price per kg from the productPrice string
-        productPricePerKg = productPrice?.replace("[^\\d.]".toRegex(), "")?.toDoubleOrNull() ?: 0.0
+        if (productPrice != null) {
+            productPricePerKg = productPrice.replace("€", "").toDouble()
+        }
 
         quantityInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -62,12 +84,16 @@ class ProductDetailActivity : AppCompatActivity() {
         if (isEditing) {
             val quantity = intent.getDoubleExtra("QUANTITY", 0.0)
             quantityInput.setText(quantity.toString())
-            cartItem = CartItem(productName ?: "", productImage, quantity, quantity * productPricePerKg)
+            cartItem = CartItem(productId,farmerId, productImageByteArray, productName ?: "", quantity, productPricePerKg, quantity * productPricePerKg)
         }
 
         addToCartButton.setOnClickListener {
             addToCart()
         }
+    }
+
+    private fun byteArrayToBitmap(byteArray: ByteArray?): Bitmap {
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray?.size ?: 0)
     }
 
     private fun calculateTotalPrice() {
@@ -78,7 +104,7 @@ class ProductDetailActivity : AppCompatActivity() {
 
     private fun addToCart() {
         val productName = productNameTextView.text.toString()
-        val productImage = intent.getIntExtra("PRODUCT_IMAGE", 0)
+        val productImage = intent.getByteArrayExtra("PRODUCT_IMAGE")
         val quantity = quantityInput.text.toString().toDoubleOrNull() ?: 0.0
         val totalPrice = quantity * productPricePerKg
 
@@ -86,10 +112,9 @@ class ProductDetailActivity : AppCompatActivity() {
             if (isEditing && cartItem != null) {
                 CartManager.removeItem(cartItem!!)
             }
-            val cartItem = CartItem(productName, productImage, quantity, totalPrice)
+            val cartItem = CartItem(productId, farmerId, productImage, productName, quantity, productPricePerKg, totalPrice)
             CartManager.addItem(cartItem)
             Toast.makeText(this, "$productName added to cart", Toast.LENGTH_SHORT).show()
-            // Επιστροφή στην `MainActivity` και `ProductPageFragment`
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         } else {

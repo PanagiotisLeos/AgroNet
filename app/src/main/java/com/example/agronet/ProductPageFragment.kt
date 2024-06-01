@@ -1,17 +1,23 @@
 package com.example.agronet
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.widget.Toast
-import android.widget.TextView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.sql.SQLException
 
 class ProductPageFragment : Fragment() {
     private var popupWindow: PopupWindow? = null
@@ -19,12 +25,22 @@ class ProductPageFragment : Fragment() {
     private lateinit var imperfectProductsRecyclerView: RecyclerView
     private lateinit var fastShippedRecyclerView: RecyclerView
 
+    private val databaseManager = DatabaseManager()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.product_page, container, false)
+
+        val profileBtn = view.findViewById<ImageView>(R.id.profile_icon)
+        profileBtn.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, FarmerProfileFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
         return view
     }
 
@@ -36,8 +52,13 @@ class ProductPageFragment : Fragment() {
         imperfectProductsRecyclerView = view.findViewById(R.id.imperfect_products_recycler_view)
         fastShippedRecyclerView = view.findViewById(R.id.fast_shipped_recycler_view)
 
-        // Setup layout managers and adapters for RecyclerViews
-        setupRecyclerViews()
+        // Set layout managers
+        topSellingRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        imperfectProductsRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        fastShippedRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+        // Fetch data and set adapters
+        fetchAndDisplayProducts()
 
         // Setup filter icon click listener to show categories popup
         val filterIcon: ImageView = view.findViewById(R.id.filter_icon)
@@ -46,33 +67,37 @@ class ProductPageFragment : Fragment() {
         }
     }
 
-    private fun setupRecyclerViews() {
-        val products = listOf(
-            Product(1,
-                "Bananas Voiviotas",
-                "0.99€ / per kg",
-                R.drawable.bananas,
-                R.drawable.farmer_photo
-            ),
-            Product(1,"Apples", "1.50€ / per kg", R.drawable.bananas, R.drawable.farmer_photo),
-            Product(1,"Oranges", "1.20€ / per kg", R.drawable.bananas, R.drawable.farmer_photo)
-        )
-
-        topSellingRecyclerView.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        imperfectProductsRecyclerView.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        fastShippedRecyclerView.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-        topSellingRecyclerView.adapter = ProductPageAdapter(requireContext(), products)
-        imperfectProductsRecyclerView.adapter = ProductPageAdapter(requireContext(), products)
-        fastShippedRecyclerView.adapter = ProductPageAdapter(requireContext(), products)
+    private fun fetchAndDisplayProducts() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            Log.d("ProductPageFragment", "Fetching products")
+            try {
+                val products = databaseManager.getAllProducts()
+                Log.d("ProductPageFragment", "Products fetched: ${products.size}")
+                withContext(Dispatchers.Main) {
+                    if (products.isNotEmpty()) {
+                        Log.d("ProductPageFragment", "Setting adapter with products")
+                        val adapter = ProductPageAdapter(requireContext(), products)
+                        topSellingRecyclerView.adapter = adapter
+                        imperfectProductsRecyclerView.adapter = adapter
+                        fastShippedRecyclerView.adapter = adapter
+                        Log.d("ProductPageFragment", "Adapter set")
+                    } else {
+                        Toast.makeText(requireContext(), "No products found", Toast.LENGTH_SHORT).show()
+                        Log.d("ProductPageFragment", "No products found")
+                    }
+                }
+            } catch (e: SQLException) {
+                Log.e("ProductPageFragment", "SQL Exception: ${e.message}", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Failed to load products", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
+
     private fun showCategoriesPopup(anchorView: View) {
-        // Inflate the popup layout
-        val context = context ?: return // return early if context is null
+        val context = context ?: return
 
         val layoutInflater = LayoutInflater.from(context)
         val popupView = layoutInflater.inflate(R.layout.popup_categories, null, false)
@@ -88,7 +113,7 @@ class ProductPageFragment : Fragment() {
         try {
             popupWindow.showAsDropDown(anchorView)
         } catch (e: Exception) {
-            e.printStackTrace()  // This will print the full stack trace, including the specific exception
+            e.printStackTrace()
         }
     }
 
