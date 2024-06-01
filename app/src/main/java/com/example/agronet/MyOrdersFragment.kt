@@ -105,7 +105,7 @@ class MyOrdersFragment : Fragment(), OrderAdapter.OnOrderClickListener {
 
         try {
             connection = DatabaseManager.getConnection()
-            Log.d("MyOrdersFragment", "Database connection established")
+            Log.d("MyOrdersFragment", "Database connection established: $connection")
 
             val orderQuery = """
                 SELECT * FROM orders 
@@ -114,11 +114,15 @@ class MyOrdersFragment : Fragment(), OrderAdapter.OnOrderClickListener {
                 WHERE orders.farmer_id = ?
             """
             orderPreparedStatement = connection.prepareStatement(orderQuery)
-            orderPreparedStatement.setInt(1, SessionManager(requireContext()).userId.toInt())
+            val farmerId = SessionManager(requireContext()).userId.toInt()
+            orderPreparedStatement.setInt(1, farmerId)
+            Log.d("MyOrdersFragment", "Executing query: $orderQuery with farmerId: $farmerId")
             orderResultSet = orderPreparedStatement.executeQuery()
             Log.d("MyOrdersFragment", "Executed order query")
 
             while (orderResultSet.next()) {
+                Log.d("MyOrdersFragment", "Order found: ID ${orderResultSet.getInt("order_id")}")
+
                 val orderId = orderResultSet.getInt("order_id")
                 val customerId = orderResultSet.getInt("customer_id")
                 val farmerId = orderResultSet.getInt("farmer_id")
@@ -128,23 +132,23 @@ class MyOrdersFragment : Fragment(), OrderAdapter.OnOrderClickListener {
                 val quantity = orderResultSet.getDouble("quantity")
                 val totalPrice = orderResultSet.getDouble("total_price")
                 val status = orderResultSet.getString("status")
-                val productImageResId = R.drawable.bananas // Default image resource ID
+                val productImageResId = R.drawable.bananas
 
                 val items = mutableListOf<OrderItem>()
-                val itemQuery = "SELECT * FROM order_items WHERE order_id = ?"
+                val itemQuery = "SELECT * FROM order_items inner join product on order_items.product_id = product.id WHERE order_id = ?"
                 itemPreparedStatement = connection.prepareStatement(itemQuery)
                 itemPreparedStatement.setInt(1, orderId)
                 itemResultSet = itemPreparedStatement.executeQuery()
                 Log.d("MyOrdersFragment", "Executed item query for order ID: $orderId")
 
                 while (itemResultSet.next()) {
-                    val itemId = itemResultSet.getInt("item_id")
+                    val itemId = itemResultSet.getInt("order_item_id")
                     val productId = itemResultSet.getInt("product_id")
-                    val productName = itemResultSet.getString("product_name")
+                    val productName = itemResultSet.getString("name")
                     val quantity = itemResultSet.getInt("quantity")
                     val pricePerUnit = itemResultSet.getDouble("price")
                     val totalPrice = itemResultSet.getDouble("total_price")
-                    val productImageResId = R.drawable.bananas
+                    val productImageResId = R.drawable.bananas // Default image resource ID
 
                     val orderItem = OrderItem(itemId, productId, productName, quantity, pricePerUnit, totalPrice, productImageResId)
                     items.add(orderItem)
