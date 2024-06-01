@@ -1,6 +1,6 @@
 package com.example.agronet
 
-data class Order(
+
     val orderId: Int,
     val customerId: Int,
     val orderDate: String,

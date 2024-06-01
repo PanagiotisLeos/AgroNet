@@ -18,6 +18,7 @@ import java.sql.SQLException
 class FarmersFragment : Fragment(),OnFarmerClickListener {
 
     private lateinit var farmerAdapter: FarmerAdapter
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_farmers, container, false)
@@ -33,7 +34,7 @@ class FarmersFragment : Fragment(),OnFarmerClickListener {
                 .commit()
         }
 
-        // Initialize the adapter with an empty list initially
+        sessionManager = SessionManager(requireContext())
         farmerAdapter = FarmerAdapter(listOf(), this)
         recyclerView.adapter = farmerAdapter
 
@@ -57,8 +58,14 @@ class FarmersFragment : Fragment(),OnFarmerClickListener {
             try {
                 connection = DatabaseManager.getConnection()
 
+                val sql = "SELECT farmer.*, COUNT(star.id) AS total_stars, " +
+                        "CASE WHEN EXISTS " +
+                        "(SELECT 1 FROM star WHERE star.farmer_id = farmer.id AND star.customer_id = ${sessionManager.userId}) " +
+                        "THEN 1 ELSE 0 END AS customer_has_starred FROM farmer " +
+                        "LEFT JOIN star ON farmer.id = star.farmer_id " +
+                        "GROUP BY farmer.id"
                 val statement = connection.createStatement()
-                val resultSet = statement.executeQuery("SELECT * FROM farmer")
+                val resultSet = statement.executeQuery(sql)
 
                 val farmersList = mutableListOf<Farmer>()
                 while (resultSet.next()) {
@@ -69,7 +76,9 @@ class FarmersFragment : Fragment(),OnFarmerClickListener {
                     val profImg = resultSet.getBytes("prof_image")
                     val type = resultSet.getString("type")
                     val description = resultSet.getString("description")
-                    val farmer = Farmer(id, fname, lname, location, profImg, description, type)
+                    val totalStars = resultSet.getInt("total_stars")
+                    val customerHasStarred = resultSet.getInt("customer_has_starred") == 1
+                    val farmer = Farmer(id, fname, lname, location, profImg, type, description,totalStars,customerHasStarred)
                     farmersList.add(farmer)
                 }
 
