@@ -78,6 +78,7 @@
             android:layout_alignParentBottom="true"
             android:src="@drawable/ic_remove"
             android:background="@android:color/transparent" />
+        <!--ready-->
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
