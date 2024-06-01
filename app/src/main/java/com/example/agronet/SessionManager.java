@@ -61,37 +61,4 @@ public class SessionManager {
         editor.commit();
     }
 
-    public User fetchUserDetails(String userId, String userType) throws SQLException {
-        Connection conn = DatabaseManager.getConnection();
-        String query = userType.equals("0") ?
-                "SELECT * FROM customer WHERE customer_id = ?" :
-                "SELECT * FROM farmer WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, userId);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                if ("0".equals(userType)) {
-                    return new Customer(
-                            rs.getInt("customer_id"),
-                            rs.getString("first_name"),
-                            rs.getString("last_name"),
-                            rs.getString("phone")
-
-                    );
-                } else if ("1".equals(userType)) {
-                    return new Farmer(
-                            rs.getInt("id"),
-                            rs.getString("first_name"),
-                            rs.getString("last_name"),
-                            rs.getString("location"),
-                            rs.getBytes("prof_image"),
-                            rs.getString("farmer_type"),
-                            rs.getString("description")
-
-                    );
-                }
-            }
-        }
-        return null;
-    }
 }
