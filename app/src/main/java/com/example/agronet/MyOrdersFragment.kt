@@ -30,9 +30,10 @@ class MyOrdersFragment : Fragment(), OrderAdapter.OnOrderClickListener {
             Order(
                 orderId = 1213,
                 customerId = 1415,
+                farmerId = 2,
                 orderDate = "24-3-2024",
-                customerName = "Panagiotis Leos",
-                shippingAddress = "Aratou 26",
+                customerName = "Stakastakis",
+                shippingAddress = "Karatzaferh 3",
                 quantity = 2.0,
                 totalPrice = 19.99,
                 productImageResId = R.drawable.bananas,
@@ -51,6 +52,7 @@ class MyOrdersFragment : Fragment(), OrderAdapter.OnOrderClickListener {
             Order(
                 orderId = 1214,
                 customerId = 1416,
+                farmerId = 2,
                 orderDate = "25-3-2024",
                 customerName = "Apostolaras Xrist",
                 shippingAddress = "Fillelhnwn 7A",
