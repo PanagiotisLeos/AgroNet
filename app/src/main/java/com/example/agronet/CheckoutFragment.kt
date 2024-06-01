@@ -145,8 +145,8 @@ class CheckoutFragment : Fragment() {
                     shippingAddress = "shippingAddress",
                     quantity = totalQuantityForFarmer,
                     totalPrice = totalAmountForFarmer,
-                    productImageResId = R.drawable.bananas, // Default image resource ID
-                    items = items.map { OrderItem(0, it.productId, it.productName, it.quantity.toInt(), it.price, it.totalPrice, R.drawable.bananas) }
+                    productImageResId = items.first().productImage, // Default image resource ID
+                    items = items.map { OrderItem(0, it.productId, it.productName, it.quantity.toInt(), it.price, it.totalPrice, it.productImage) }
                 )
 
                 Log.d("CheckoutFragment", "Processing order for farmerId: $farmerId, totalAmount: €$totalAmountForFarmer")

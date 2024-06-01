@@ -132,7 +132,7 @@ class MyOrdersFragment : Fragment(), OrderAdapter.OnOrderClickListener {
                 val quantity = orderResultSet.getDouble("quantity")
                 val totalPrice = orderResultSet.getDouble("total_price")
                 val status = orderResultSet.getString("status")
-                val productImageResId = R.drawable.bananas
+                val productImageResId = orderResultSet.getBytes("prod_image")
 
                 val items = mutableListOf<OrderItem>()
                 val itemQuery = "SELECT * FROM order_items inner join product on order_items.product_id = product.id WHERE order_id = ?"
@@ -148,7 +148,7 @@ class MyOrdersFragment : Fragment(), OrderAdapter.OnOrderClickListener {
                     val quantity = itemResultSet.getInt("quantity")
                     val pricePerUnit = itemResultSet.getDouble("price")
                     val totalPrice = itemResultSet.getDouble("total_price")
-                    val productImageResId = R.drawable.bananas // Default image resource ID
+                    val productImageResId = itemResultSet.getBytes("prod_image") // Default image resource ID
 
                     val orderItem = OrderItem(itemId, productId, productName, quantity, pricePerUnit, totalPrice, productImageResId)
                     items.add(orderItem)

@@ -1,5 +1,7 @@
 package com.example.agronet
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +27,7 @@ class OrderAdapter(
         val deleteButton: ImageButton = itemView.findViewById(R.id.delete_order_button)
 
         fun bind(order: Order) {
-            productImage.setImageResource(order.productImageResId)
+            productImage.setImageBitmap(byteArrayToBitmap(order.productImageResId))
             orderInfo.text = "Customer: ${order.customerName}\nShipping Address: ${order.shippingAddress}\nQuantity: ${order.quantity}\nTotal Price: €${order.totalPrice}"
             orderDate.text = "Order Date: ${order.orderDate}"
             orderId.text = "Order ID: ${order.orderId}"
@@ -51,5 +53,9 @@ class OrderAdapter(
     fun updateOrders(newOrders: List<Order>) {
         orders = newOrders
         notifyDataSetChanged()
+    }
+
+    private fun byteArrayToBitmap(byteArray: ByteArray?): Bitmap {
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray?.size ?: 0)
     }
 }

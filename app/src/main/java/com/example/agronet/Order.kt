@@ -10,6 +10,6 @@ data class Order(
     val shippingAddress: String,
     val quantity: Double,
     val totalPrice: Double,
-    val productImageResId: Int,
+    val productImageResId: ByteArray?,
     val items: List<OrderItem>
 )

@@ -7,5 +7,5 @@ data class OrderItem(
     val quantity: Int,
     val pricePerUnit: Double,
     val totalPrice: Double,
-    val productImageResId: Int
+    val productImageResId: ByteArray?
 )
