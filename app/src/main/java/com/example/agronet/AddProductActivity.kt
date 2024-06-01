@@ -66,9 +66,6 @@ class AddProductActivity : AppCompatActivity() {
                             Log.d("AddProductActivity", "Product added successfully")
                             Toast.makeText(this@AddProductActivity, "Product added successfully", Toast.LENGTH_SHORT).show()
 
-                            // Redirect to FarmerProfileActivity
-                            val intent = Intent(this@AddProductActivity, FarmerProfileActivity::class.java)
-                            startActivity(intent)
                             finish()
                         } else {
                             Log.e("AddProductActivity", "Failed to add product")
@@ -102,7 +99,7 @@ class AddProductActivity : AppCompatActivity() {
             val imageUri = data?.data
             val inputStream = contentResolver.openInputStream(imageUri!!)
             val bitmap = BitmapFactory.decodeStream(inputStream)
-            val resizedBitmap = resizeBitmap(bitmap, 400) // Resize to desired max length, e.g., 500 pixels
+            val resizedBitmap = resizeBitmap(bitmap, 300,300) // Resize to desired max length, e.g., 500 pixels
             productImage.setImageBitmap(resizedBitmap)
             Log.d("AddProductActivity", "Image selected and resized: $imageUri")
         }
@@ -139,19 +136,7 @@ class AddProductActivity : AppCompatActivity() {
     }
 
     // Utility function to resize bitmap
-    private fun resizeBitmap(source: Bitmap, maxLength: Int): Bitmap {
-        val aspectRatio = source.width.toFloat() / source.height.toFloat()
-        val width: Int
-        val height: Int
-
-        if (source.width > source.height) {
-            width = maxLength
-            height = (maxLength / aspectRatio).toInt()
-        } else {
-            height = maxLength
-            width = (maxLength * aspectRatio).toInt()
-        }
-
-        return Bitmap.createScaledBitmap(source, width, height, true)
+    private fun resizeBitmap(source: Bitmap, targetWidth: Int, targetHeight: Int): Bitmap {
+        return Bitmap.createScaledBitmap(source, targetWidth, targetHeight, true)
     }
 }
