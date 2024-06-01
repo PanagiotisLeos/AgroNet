@@ -26,7 +26,12 @@ class ProductPageAdapter(private val productContext: Context, private val produc
         holder.productName.text = product.name
         holder.productPrice.text = "${product.price} /per kg"
 
-        // Set posted by image or placeholder if null
+        if (product.imageResId != null) {
+            holder.productImage.setImageBitmap(product.imageResId)
+        } else {
+            holder.postedByImageView.setImageResource(R.drawable.bananas)  // Set your placeholder image
+        }
+
         if (product.postedByImageResId != null) {
             holder.postedByImageView.setImageBitmap(product.postedByImageResId)
         } else {
