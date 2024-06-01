@@ -29,12 +29,6 @@ public class Farmer extends User implements Parcelable {
         description = in.readString();
         total_stars = in.readInt();
         customerHasStarred = in.readByte() != 0;
-
-
-        if (profile_img == null || profile_img.length == 0) {
-            // Set a placeholder for default image
-            profile_img = new byte[] {0};
-        }
     }
 
     @Override
@@ -72,7 +66,7 @@ public class Farmer extends User implements Parcelable {
         this.fname = fname;
         this.lname = lname;
         this.location = location;
-        this.profile_img = (profile_img == null || profile_img.length == 0) ? new byte[] {0} : profile_img;  // Use placeholder if null
+        this.profile_img = profile_img;
         this.farmerType = farmerType;
         this.description = description;
         this.stars = new ArrayList<>();
@@ -109,9 +103,10 @@ public class Farmer extends User implements Parcelable {
         return profile_img;
     }
 
-    public void setProfileImg(byte[] profileImg) {
-        this.profile_img = (profileImg == null || profileImg.length == 0) ? new byte[] {0} : profileImg;  // Use placeholder if null
+    public void setProfileImg(byte[] profile_img) {
+        this.profile_img = profile_img;
     }
+
     public String getFarmerType() {
         return farmerType;
     }

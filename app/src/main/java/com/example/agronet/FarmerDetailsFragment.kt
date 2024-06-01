@@ -1,6 +1,11 @@
 package com.example.agronet
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -63,8 +68,6 @@ class FarmerDetailsFragment : Fragment() {
         if (farmerId == null) return view
         fetchFarmerProfileAndProducts(farmerId)
 
-
-
         starButton.setOnClickListener {
             if (isStarred) {
                 removeStar(sessionManager.userId.toInt(), farmerId)
@@ -121,8 +124,6 @@ class FarmerDetailsFragment : Fragment() {
                 ) AS customer_star ON farmer.id = customer_star.farmer_id
                 WHERE 
                     farmer.id = ?;
-                
-                
                 """
                 val preparedStatement = connection.prepareStatement(query)
                 preparedStatement.setInt(1, farmerId)
@@ -146,9 +147,12 @@ class FarmerDetailsFragment : Fragment() {
                             location.text = loc
                             starButton.text = totalStars.toString()
 
-                            val bitmap = BitmapFactory.decodeByteArray(profImg, 0, profImg.size)
-                            profileImg.setImageBitmap(bitmap)
-
+                            if (profImg == null || profImg.isEmpty()) {
+                                profileImg.setImageBitmap(drawableToBitmap(requireContext(), R.drawable.farmer_photo))
+                            } else {
+                                val bitmap = BitmapFactory.decodeByteArray(profImg, 0, profImg.size)
+                                profileImg.setImageBitmap(bitmap)
+                            }
                             if (star != 0) {
                                 isStarred = true
                                 starButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_star_gold, 0, 0)
@@ -256,5 +260,18 @@ class FarmerDetailsFragment : Fragment() {
                 connection?.close()
             }
         }
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    fun drawableToBitmap(context: Context, drawableId: Int): Bitmap {
+        val drawable = ContextCompat.getDrawable(context, drawableId)
+        if (drawable is BitmapDrawable) {
+            return drawable.bitmap
+        }
+        val bitmap = Bitmap.createBitmap(drawable!!.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return bitmap
     }
 }

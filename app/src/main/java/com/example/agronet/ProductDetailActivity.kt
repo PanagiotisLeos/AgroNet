@@ -51,19 +51,20 @@ class ProductDetailActivity : AppCompatActivity() {
         farmerId = intent.getIntExtra("FARMER_ID",0)
 
         productNameTextView.text = productName
+        productPriceTextView.text = productPrice
 
         if (productImageByteArray != null) {
             productImageView.setImageBitmap(byteArrayToBitmap(productImageByteArray))
         } else {
-            productImageView.setImageResource(R.drawable.bananas) // Use your default image resource
+            productImageView.setImageResource(R.drawable.bananas)
         }
 
-        productPriceTextView.text = productPrice
+
 
         if (farmerImageByteArray != null) {
             farmerImageView.setImageBitmap(byteArrayToBitmap(farmerImageByteArray))
         } else {
-            farmerImageView.setImageResource(R.drawable.bananas) // Use your default image resource
+            farmerImageView.setImageResource(R.drawable.farmer_photo) 
         }
 
         // Extract price per kg from the productPrice string

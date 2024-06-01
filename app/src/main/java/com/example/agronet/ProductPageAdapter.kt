@@ -25,8 +25,13 @@ class ProductPageAdapter(private val productContext: Context, private val produc
         val product = productList[position]
         holder.productName.text = product.name
         holder.productPrice.text = "${product.price} /per kg"
-        holder.productImage.setImageBitmap(product.imageResId)
-        holder.postedByImageView.setImageBitmap(product.postedByImageResId)
+
+        // Set posted by image or placeholder if null
+        if (product.postedByImageResId != null) {
+            holder.postedByImageView.setImageBitmap(product.postedByImageResId)
+        } else {
+            holder.postedByImageView.setImageResource(R.drawable.farmer_photo)  // Set your placeholder image
+        }
 
         holder.itemView.setOnClickListener {
             val intent = Intent(productContext, ProductDetailActivity::class.java).apply {
@@ -36,7 +41,7 @@ class ProductPageAdapter(private val productContext: Context, private val produc
                 putExtra("POSTED_BY_IMAGE",
                     product.postedByImageResId?.let { it1 -> bitmapToByteArray(it1) })
                 putExtra("PRODUCT_ID", product.id)
-                putExtra("FARMER_ID",product.farmerId)
+                putExtra("FARMER_ID", product.farmerId)
             }
             productContext.startActivity(intent)
         }

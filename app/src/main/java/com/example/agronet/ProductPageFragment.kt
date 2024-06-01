@@ -97,8 +97,7 @@ class ProductPageFragment : Fragment() {
 
 
     private fun showCategoriesPopup(anchorView: View) {
-        // Inflate the popup layout
-        val context = context ?: return // return early if context is null
+        val context = context ?: return
 
         val layoutInflater = LayoutInflater.from(context)
         val popupView = layoutInflater.inflate(R.layout.popup_categories, null, false)
@@ -114,7 +113,7 @@ class ProductPageFragment : Fragment() {
         try {
             popupWindow.showAsDropDown(anchorView)
         } catch (e: Exception) {
-            e.printStackTrace()  // This will print the full stack trace, including the specific exception
+            e.printStackTrace()
         }
     }
 
