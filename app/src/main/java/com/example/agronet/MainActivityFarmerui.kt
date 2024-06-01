@@ -10,7 +10,7 @@ class MainActivityFarmerui : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.`activity_main_farmerui.xml`)
+        setContentView(R.layout.activity_main_farmerui)
 
         //session
         val sessionManager = SessionManager(applicationContext)

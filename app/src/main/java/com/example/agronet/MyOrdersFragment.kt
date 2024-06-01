@@ -27,8 +27,48 @@ class MyOrdersFragment : Fragment(), OrderAdapter.OnOrderClickListener {
         // Initialize your orders list here
         orders = listOf(
             // Add your orders here
-            Order(1213, 1415, "24-3-2024", "John Doe", "123 Street", 2.0, 19.99, R.drawable.bananas),
-            Order(1213, 1415, "24-3-2024", "John Doe", "123 Street", 2.0, 19.99, R.drawable.bananas)
+            Order(
+                orderId = 1213,
+                customerId = 1415,
+                orderDate = "24-3-2024",
+                customerName = "Panagiotis Leos",
+                shippingAddress = "Aratou 26",
+                quantity = 2.0,
+                totalPrice = 19.99,
+                productImageResId = R.drawable.bananas,
+                items = listOf(
+                    OrderItem(
+                        itemId = 1,
+                        productId = 101,
+                        productName = "Bananas",
+                        quantity = 2,
+                        pricePerUnit = 9.99,
+                        totalPrice = 19.98,
+                        productImageResId = R.drawable.bananas
+                    )
+                )
+            ),
+            Order(
+                orderId = 1214,
+                customerId = 1416,
+                orderDate = "25-3-2024",
+                customerName = "Apostolaras Xrist",
+                shippingAddress = "Fillelhnwn 7A",
+                quantity = 1.0,
+                totalPrice = 9.99,
+                productImageResId = R.drawable.bananas,
+                items = listOf(
+                    OrderItem(
+                        itemId = 2,
+                        productId = 102,
+                        productName = "Bananas",
+                        quantity = 1,
+                        pricePerUnit = 9.99,
+                        totalPrice = 9.99,
+                        productImageResId = R.drawable.bananas
+                    )
+                )
+            )
         )
 
         orderAdapter = OrderAdapter(orders, this)
@@ -73,3 +113,4 @@ class MyOrdersFragment : Fragment(), OrderAdapter.OnOrderClickListener {
         // Handle delete order click
     }
 }
+
