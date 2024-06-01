@@ -53,9 +53,8 @@ public class SessionManager {
     }
 
     public String getUserType() {
-        return KEY_USER_TYPE;
+        return pref.getString(KEY_USER_TYPE, null);
     }
-
     public void logoutUser() {
         editor.clear();
         editor.commit();

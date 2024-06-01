@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class OrderAdapter(
-    private val orders: List<Order>,
+    private var orders: List<Order>,
     private val listener: OnOrderClickListener
 ) : RecyclerView.Adapter<OrderAdapter.OrderViewHolder>() {
 
@@ -19,7 +19,6 @@ class OrderAdapter(
 
     inner class OrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val productImage: ImageView = itemView.findViewById(R.id.product_image)
-        val productId: TextView = itemView.findViewById(R.id.product_id)
         val orderInfo: TextView = itemView.findViewById(R.id.order_info)
         val orderDate: TextView = itemView.findViewById(R.id.order_date)
         val orderId: TextView = itemView.findViewById(R.id.order_id)
@@ -27,9 +26,8 @@ class OrderAdapter(
 
         fun bind(order: Order) {
             productImage.setImageResource(order.productImageResId)
-            productId.text = "Product ID: ${order.orderId}"
-            orderInfo.text = "Customer: ${order.customerName}\nShipping Address: ${order.shippingAddress}\nQuantity: ${order.quantity}\nTotal Price: ${order.totalPrice}"
-            orderDate.text = order.orderDate
+            orderInfo.text = "Customer: ${order.customerName}\nShipping Address: ${order.shippingAddress}\nQuantity: ${order.quantity}\nTotal Price: €${order.totalPrice}"
+            orderDate.text = "Order Date: ${order.orderDate}"
             orderId.text = "Order ID: ${order.orderId}"
 
             deleteButton.setOnClickListener {
@@ -49,4 +47,9 @@ class OrderAdapter(
     }
 
     override fun getItemCount() = orders.size
+
+    fun updateOrders(newOrders: List<Order>) {
+        orders = newOrders
+        notifyDataSetChanged()
+    }
 }

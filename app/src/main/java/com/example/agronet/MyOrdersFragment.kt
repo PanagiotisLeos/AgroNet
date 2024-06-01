@@ -1,6 +1,7 @@
 package com.example.agronet
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.sql.Connection
+import java.sql.PreparedStatement
+import java.sql.ResultSet
 
 class MyOrdersFragment : Fragment(), OrderAdapter.OnOrderClickListener {
 
@@ -24,57 +32,16 @@ class MyOrdersFragment : Fragment(), OrderAdapter.OnOrderClickListener {
         recyclerView = view.findViewById(R.id.recycler_view_orders)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        // Initialize your orders list here
-        orders = listOf(
-            // Add your orders here
-            Order(
-                orderId = 1213,
-                customerId = 1415,
-                farmerId = 2,
-                orderDate = "24-3-2024",
-                customerName = "Stakastakis",
-                shippingAddress = "Karatzaferh 3",
-                quantity = 2.0,
-                totalPrice = 19.99,
-                productImageResId = R.drawable.bananas,
-                items = listOf(
-                    OrderItem(
-                        itemId = 1,
-                        productId = 101,
-                        productName = "Bananas",
-                        quantity = 2,
-                        pricePerUnit = 9.99,
-                        totalPrice = 19.98,
-                        productImageResId = R.drawable.bananas
-                    )
-                )
-            ),
-            Order(
-                orderId = 1214,
-                customerId = 1416,
-                farmerId = 2,
-                orderDate = "25-3-2024",
-                customerName = "Apostolaras Xrist",
-                shippingAddress = "Fillelhnwn 7A",
-                quantity = 1.0,
-                totalPrice = 9.99,
-                productImageResId = R.drawable.bananas,
-                items = listOf(
-                    OrderItem(
-                        itemId = 2,
-                        productId = 102,
-                        productName = "Bananas",
-                        quantity = 1,
-                        pricePerUnit = 9.99,
-                        totalPrice = 9.99,
-                        productImageResId = R.drawable.bananas
-                    )
-                )
-            )
-        )
-
-        orderAdapter = OrderAdapter(orders, this)
-        recyclerView.adapter = orderAdapter
+        // Fetch orders from the database
+        GlobalScope.launch(Dispatchers.IO) {
+            Log.d("MyOrdersFragment", "Starting to fetch orders from the database")
+            orders = fetchOrdersFromDatabase()
+            withContext(Dispatchers.Main) {
+                Log.d("MyOrdersFragment", "Fetched ${orders.size} orders from the database")
+                orderAdapter = OrderAdapter(orders, this@MyOrdersFragment)
+                recyclerView.adapter = orderAdapter
+            }
+        }
 
         setupButtons(view)
 
@@ -92,6 +59,8 @@ class MyOrdersFragment : Fragment(), OrderAdapter.OnOrderClickListener {
             btnCompleted.setBackgroundResource(R.drawable.button_background_unselected)
             btnCanceled.setBackgroundResource(R.drawable.button_background_unselected)
             // Load requested orders
+            Log.d("MyOrdersFragment", "Filtering orders by status: pending")
+            filterOrdersByStatus("pending")
         }
 
         btnCompleted.setOnClickListener {
@@ -100,6 +69,8 @@ class MyOrdersFragment : Fragment(), OrderAdapter.OnOrderClickListener {
             btnCompleted.setBackgroundResource(R.drawable.button_background_selected)
             btnCanceled.setBackgroundResource(R.drawable.button_background_unselected)
             // Load completed orders
+            Log.d("MyOrdersFragment", "Filtering orders by status: completed")
+            filterOrdersByStatus("completed")
         }
 
         btnCanceled.setOnClickListener {
@@ -108,11 +79,93 @@ class MyOrdersFragment : Fragment(), OrderAdapter.OnOrderClickListener {
             btnCompleted.setBackgroundResource(R.drawable.button_background_unselected)
             btnCanceled.setBackgroundResource(R.drawable.button_background_selected)
             // Load canceled orders
+            Log.d("MyOrdersFragment", "Filtering orders by status: canceled")
+            filterOrdersByStatus("canceled")
         }
+    }
+
+    private fun filterOrdersByStatus(status: String) {
+        val filteredOrders = orders.filter { it.status == status }
+        Log.d("MyOrdersFragment", "Filtered orders count: ${filteredOrders.size}")
+        orderAdapter.updateOrders(filteredOrders)
     }
 
     override fun onDeleteOrderClick(order: Order) {
         // Handle delete order click
+        Log.d("MyOrdersFragment", "Delete order clicked for order ID: ${order.orderId}")
+    }
+
+    private suspend fun fetchOrdersFromDatabase(): List<Order> {
+        val orders = mutableListOf<Order>()
+        var connection: Connection? = null
+        var orderPreparedStatement: PreparedStatement? = null
+        var itemPreparedStatement: PreparedStatement? = null
+        var orderResultSet: ResultSet? = null
+        var itemResultSet: ResultSet? = null
+
+        try {
+            connection = DatabaseManager.getConnection()
+            Log.d("MyOrdersFragment", "Database connection established")
+
+            val orderQuery = """
+                SELECT * FROM orders 
+                INNER JOIN order_items ON order_items.order_id = orders.order_id 
+                INNER JOIN product ON product.id = order_items.product_id 
+                WHERE orders.farmer_id = ?
+            """
+            orderPreparedStatement = connection.prepareStatement(orderQuery)
+            orderPreparedStatement.setInt(1, SessionManager(requireContext()).userId.toInt())
+            orderResultSet = orderPreparedStatement.executeQuery()
+            Log.d("MyOrdersFragment", "Executed order query")
+
+            while (orderResultSet.next()) {
+                val orderId = orderResultSet.getInt("order_id")
+                val customerId = orderResultSet.getInt("customer_id")
+                val farmerId = orderResultSet.getInt("farmer_id")
+                val orderDate = orderResultSet.getString("created_at")
+                val customerName = orderResultSet.getString("customer_name")
+                val shippingAddress = orderResultSet.getString("shipping_address")
+                val quantity = orderResultSet.getDouble("quantity")
+                val totalPrice = orderResultSet.getDouble("total_price")
+                val status = orderResultSet.getString("status")
+                val productImageResId = R.drawable.bananas // Default image resource ID
+
+                val items = mutableListOf<OrderItem>()
+                val itemQuery = "SELECT * FROM order_items WHERE order_id = ?"
+                itemPreparedStatement = connection.prepareStatement(itemQuery)
+                itemPreparedStatement.setInt(1, orderId)
+                itemResultSet = itemPreparedStatement.executeQuery()
+                Log.d("MyOrdersFragment", "Executed item query for order ID: $orderId")
+
+                while (itemResultSet.next()) {
+                    val itemId = itemResultSet.getInt("item_id")
+                    val productId = itemResultSet.getInt("product_id")
+                    val productName = itemResultSet.getString("product_name")
+                    val quantity = itemResultSet.getInt("quantity")
+                    val pricePerUnit = itemResultSet.getDouble("price")
+                    val totalPrice = itemResultSet.getDouble("total_price")
+                    val productImageResId = R.drawable.bananas
+
+                    val orderItem = OrderItem(itemId, productId, productName, quantity, pricePerUnit, totalPrice, productImageResId)
+                    items.add(orderItem)
+                }
+
+                val order = Order(orderId, customerId, farmerId, status, orderDate, customerName, shippingAddress, quantity, totalPrice, productImageResId, items)
+                orders.add(order)
+                Log.d("MyOrdersFragment", "Added order ID: $orderId with ${items.size} items")
+            }
+
+        } catch (e: Exception) {
+            Log.e("MyOrdersFragment", "Error fetching orders from database", e)
+        } finally {
+            orderResultSet?.close()
+            itemResultSet?.close()
+            orderPreparedStatement?.close()
+            itemPreparedStatement?.close()
+            connection?.close()
+            Log.d("MyOrdersFragment", "Database connection closed")
+        }
+
+        return orders
     }
 }
-
