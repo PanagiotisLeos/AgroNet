@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F0F0D0"
+    tools:context=".MyOrdersFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header -->
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#F0F0D0"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Top Bar with Logo and Profile Icon -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="8dp">
+
+                    <ImageView
+                        android:id="@+id/filter_icon"
+                        android:layout_width="52dp"
+                        android:layout_height="36dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/filter" />
+
+                    <TextView
+                        android:id="@+id/textView"
+                        style="@style/logoStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:fontFamily="@font/titan_one"
+                        android:text="AgroNet"
+                        android:textSize="24sp" />
+
+                    <ImageView
+                        android:id="@+id/profile_icon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/user_profile" />
+                </RelativeLayout>
+
+                <!-- Search Bar -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/searchbar"
+                    android:padding="8dp">
+
+                    <EditText
+                        android:id="@+id/search_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/search_icon"
+                        android:background="@android:color/transparent"
+                        android:gravity="center"
+                        android:hint="Search..."
+                        android:inputType="text"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="40dp"
+                        android:singleLine="true" />
+
+                    <ImageView
+                        android:id="@+id/search_icon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/search_icon" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/title_my_orders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My orders"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/itim"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp" />
+
+            <!-- Buttons for Requested, Completed, and Canceled orders -->
+            <LinearLayout
+                android:id="@+id/order_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/btn_requested"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_background_selected"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="Requested"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/itim" />
+
+                <TextView
+                    android:id="@+id/btn_completed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_background_unselected"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="Completed"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/itim" />
+
+                <TextView
+                    android:id="@+id/btn_canceled"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_background_unselected"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:text="Canceled"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/itim" />
+            </LinearLayout>
+
+            <!-- RecyclerView for displaying orders -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_orders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="8dp" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
+
