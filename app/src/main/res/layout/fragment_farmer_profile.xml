@@ -114,14 +114,14 @@
                 android:id="@+id/starButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:background="@drawable/farmers_button"
                 android:drawableTop="@drawable/ic_star"
+                android:elevation="4dp"
                 android:gravity="center"
                 android:padding="8dp"
                 android:text="120"
                 android:textColor="@android:color/black"
-                android:elevation="4dp"
-                android:layout_margin="4dp"
                 android:textSize="14sp" />
 
             <androidx.appcompat.widget.AppCompatButton

@@ -1,6 +1,7 @@
 package com.example.agronet
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ProductAdapter(private val productContext: Context, private val productList: List<Product>) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+
+    private var onItemClickListener: ((Product) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: (Product) -> Unit) {
+        onItemClickListener = listener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(productContext).inflate(R.layout.item_product, parent, false)
@@ -23,6 +30,10 @@ class ProductAdapter(private val productContext: Context, private val productLis
             holder.productPrice.text = product.price
             holder.productImage.setImageBitmap(product.imageResId)
             holder.postedByImageView.setImageBitmap(product.postedByImageResId)
+
+            holder.itemView.setOnClickListener {
+                onItemClickListener?.invoke(product)
+            }
         }
     }
 

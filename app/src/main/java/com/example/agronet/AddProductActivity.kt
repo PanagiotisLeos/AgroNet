@@ -31,6 +31,8 @@ class AddProductActivity : AppCompatActivity() {
     private lateinit var submitButton: Button
     private lateinit var sessionManager: SessionManager
 
+    private var productId: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.add_product)
@@ -42,34 +44,50 @@ class AddProductActivity : AppCompatActivity() {
         submitButton = findViewById(R.id.submitButton)
         sessionManager = SessionManager(this)
 
+        // Check if there is product data to edit
+        productId = intent.getIntExtra("product_id", 0)
+        val productName = intent.getStringExtra("product_name")
+        val productPrice = intent.getStringExtra("product_price")
+        val productImageBitmap = intent.getParcelableExtra<Bitmap>("product_image")
+
+        if (productName != null && productPrice != null && productImageBitmap != null) {
+            productNameInput.setText(productName)
+            productPriceInput.setText(productPrice)
+            productImage.setImageBitmap(productImageBitmap)
+        }
+
         addPhotoButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(intent, 100)
         }
 
         submitButton.setOnClickListener {
-            val productName = productNameInput.text.toString()
-            val productPrice = productPriceInput.text.toString().toDoubleOrNull()
+            val newProductName = productNameInput.text.toString()
+            val newProductPrice = productPriceInput.text.toString().toDoubleOrNull()
             val farmerId = sessionManager.userId.toInt()
             val prodImage = getImageByteArray(productImage)
 
-            if (productName.isNotEmpty() && productPrice != null) {
-                Log.d("AddProductActivity", "Product name: $productName, Product price: $productPrice")
+            if (newProductName.isNotEmpty() && newProductPrice != null) {
+                Log.d("AddProductActivity", "Product name: $newProductName, Product price: $newProductPrice")
 
-                val product = Product(0, productName, productPrice.toString(), farmerId, byteArrayToBitmap(prodImage), byteArrayToBitmap(prodImage))
+                val product = Product(productId, newProductName, newProductPrice.toString(), farmerId, byteArrayToBitmap(prodImage), byteArrayToBitmap(prodImage))
 
                 // Upload the product to the database
                 GlobalScope.launch(Dispatchers.IO) {
-                    val success = uploadProductToDatabase(product, prodImage)
+                    val success = if (productId == 0) {
+                        uploadProductToDatabase(product, prodImage)
+                    } else {
+                        updateProductInDatabase(product, prodImage)
+                    }
                     withContext(Dispatchers.Main) {
                         if (success) {
-                            Log.d("AddProductActivity", "Product added successfully")
-                            Toast.makeText(this@AddProductActivity, "Product added successfully", Toast.LENGTH_SHORT).show()
-
+                            Log.d("AddProductActivity", "Product added/updated successfully")
+                            Toast.makeText(this@AddProductActivity, "Product added/updated successfully", Toast.LENGTH_SHORT).show()
+                            setResult(Activity.RESULT_OK)
                             finish()
                         } else {
-                            Log.e("AddProductActivity", "Failed to add product")
-                            Toast.makeText(this@AddProductActivity, "Failed to add product", Toast.LENGTH_SHORT).show()
+                            Log.e("AddProductActivity", "Failed to add/update product")
+                            Toast.makeText(this@AddProductActivity, "Failed to add/update product", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -99,7 +117,7 @@ class AddProductActivity : AppCompatActivity() {
             val imageUri = data?.data
             val inputStream = contentResolver.openInputStream(imageUri!!)
             val bitmap = BitmapFactory.decodeStream(inputStream)
-            val resizedBitmap = resizeBitmap(bitmap, 300,300) // Resize to desired max length, e.g., 500 pixels
+            val resizedBitmap = resizeBitmap(bitmap, 300, 300) // Resize to desired max length, e.g., 500 pixels
             productImage.setImageBitmap(resizedBitmap)
             Log.d("AddProductActivity", "Image selected and resized: $imageUri")
         }
@@ -119,6 +137,36 @@ class AddProductActivity : AppCompatActivity() {
             preparedStatement.setDouble(3, product.price.toDouble())
             preparedStatement.setInt(4, product.farmerId)
             preparedStatement.setBytes(5, prodImage)
+
+            // Execute the statement
+            val rowsAffected = preparedStatement.executeUpdate()
+            Log.d("AddProductActivity", "Rows affected: $rowsAffected")
+            rowsAffected > 0
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("AddProductActivity", "Database error: ${e.message}")
+            false
+        } finally {
+            preparedStatement?.close()
+            connection?.close()
+            Log.d("AddProductActivity", "Database connection closed")
+        }
+    }
+
+    private fun updateProductInDatabase(product: Product, prodImage: ByteArray): Boolean {
+        var connection: Connection? = null
+        var preparedStatement: PreparedStatement? = null
+        return try {
+            Log.d("AddProductActivity", "Connecting to database...")
+            connection = DatabaseManager.getConnection()
+
+            val sql = "UPDATE product SET name = ?, description = ?, price = ?, prod_image = ? WHERE id = ?"
+            preparedStatement = connection.prepareStatement(sql)
+            preparedStatement.setString(1, product.name)
+            preparedStatement.setString(2, "name")
+            preparedStatement.setDouble(3, product.price.toDouble())
+            preparedStatement.setBytes(4, prodImage)
+            preparedStatement.setInt(5, product.id)
 
             // Execute the statement
             val rowsAffected = preparedStatement.executeUpdate()

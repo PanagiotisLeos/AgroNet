@@ -48,4 +48,8 @@ class MainActivityFarmerui : AppCompatActivity() {
             .replace(R.id.fragment_container, fragment)
             .commit()
     }
+
+    fun loadFarmerProfileFragment() {
+        loadFragment(FarmerProfileFragment())
+    }
 }

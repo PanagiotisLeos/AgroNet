@@ -35,8 +35,17 @@ class ProductPageFragment : Fragment() {
 
         val profileBtn = view.findViewById<ImageView>(R.id.profile_icon)
         profileBtn.setOnClickListener {
+            val sessionManager = SessionManager(requireContext())
+            val userType = sessionManager.getUserType()
+
+            val fragment = if (userType == "1") { // Assuming "1" represents a farmer
+                FarmerProfileFragment()
+            } else {
+                CustomerProfileFragment()
+            }
+
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, FarmerProfileFragment())
+                .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit()
         }
@@ -94,7 +103,6 @@ class ProductPageFragment : Fragment() {
             }
         }
     }
-
 
     private fun showCategoriesPopup(anchorView: View) {
         val context = context ?: return
